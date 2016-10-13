@@ -1,0 +1,103 @@
+@import '../../styles/mixins.less';
+
+.home-status-page {
+  font-family: arial;
+  .header {
+    padding: 10px;
+    background-color: #57c5f7;
+    .anticon {
+      font-size: 20px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .anticon-plus {
+      font-weight: bold;
+    }
+    .anticon-setting, .anticon-edit {
+      float: right;
+      margin-left: 10px;
+    }
+  }
+  ul, li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  ul {
+    width: 100%;
+  }
+
+  li {
+    position: relative;
+    padding: 10px 10px 10px 40px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    &:last-child {
+    }
+    .action-icon {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      font-size: 20px;
+      color: gray;
+      cursor: pointer;
+    }
+
+    .title {
+      display: block;
+      color: #666;
+    }
+
+    .output {
+      display: block;
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .buttons {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      text-align: right;
+
+      .anticon {
+        display: none;
+        margin-left: 5px;
+        cursor: pointer;
+      }
+
+      .anticon-eye-o {
+        display: inline-block;
+        font-size: 20px;
+        color: #57c5f7!important;
+      }
+    }
+
+    &:hover .buttons {
+      .anticon-delete, .anticon-edit {
+        display: inline-block;
+      }
+    }
+
+    &.stopped {
+      .anticon {
+        color: #aaa;
+      }
+    }
+
+    &.error {
+      .anticon {
+        color: #FF5252;
+      }
+    }
+
+    &.running {
+      .anticon {
+        color: #4CAF50;
+      }
+    }
+  }
+
+}

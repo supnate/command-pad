@@ -1,0 +1,28 @@
+{
+  'extends': './node_modules/eslint-config-airbnb/.eslintrc',
+  'parser': 'babel-eslint',
+  'globals': {
+    'document': true,
+    'window': true
+  },
+  'settings': {
+    'import/resolver': {
+      'babel-module': {}
+    }
+  },
+  'rules': {
+    'guard-for-in': 0,
+    'max-len': 0,
+    'no-nested-ternary': 0,
+    'no-console': 0,
+    'global-require': 0,
+    'new-cap': 0,
+    'class-methods-use-this': 0,
+    'react/jsx-filename-extension': 0,
+    'react/prefer-stateless-function',
+    'react/forbid-prop-types',
+    'jsx-a11y/label-has-for': 0,
+    'import/prefer-default-export': 0,
+    'import/imports-first'
+  }
+}
