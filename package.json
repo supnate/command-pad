@@ -1,9 +1,8 @@
 {
-  "name": "cgui",
+  "name": "command-pad",
   "version": "0.0.1",
-  "private": true,
-  "description": "My awesome project.",
-  "main": "src/main.js",
+  "description": "GUI for running terminal commands.",
+  "main": "src/node/main.js",
   "scripts": {
     "electron": "electron .",
     "start": "node ./tools/server.js",

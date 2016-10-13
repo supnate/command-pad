@@ -1,6 +1,8 @@
 const initialState = {
-  count: 0,
-  redditReactjsList: [],
+  cmds: [],
+  outputs: {},
+  getInitDataPending: false,
+  getInitDataError: null,
 };
 
 export default initialState;

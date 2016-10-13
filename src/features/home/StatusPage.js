@@ -1,8 +1,11 @@
 import React, { Component, PropTypes } from 'react';
+import _ from 'lodash';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button, Icon } from 'antd';
+import memobind from 'memobind';
 import * as actions from './redux/actions';
+import { findCmd } from './utils';
 
 export class StatusPage extends Component {
   static propTypes = {
@@ -14,14 +17,25 @@ export class StatusPage extends Component {
     editing: false,
   };
 
-  render() {
-    const data = [];
-    for (let i = 0; i < 10; i++) {
-      data.push({
+  componentDidMount() {
+    this.props.actions.getInitData();
+  }
 
-      });
-    }
-    console.log('process: ', process)
+  handleRunCmd(cmdId) {
+    this.props.actions.runCmd(cmdId);
+  }
+
+  handleStopCmd(cmdId) {
+    this.props.actions.stopCmd(cmdId);
+  }
+
+  renderLoading() {
+    return <div className="home-status-page">Loading...</div>;
+  }
+
+  render() {
+    const { home } = this.props;
+    if (!home.appVersion) return this.renderLoading();
     return (
       <div className="home-status-page">
         <div className="header">
@@ -30,48 +44,32 @@ export class StatusPage extends Component {
           <Icon type="edit" />
         </div>
         <ul>
-          <li className="stopped">
-            <Icon type="play-circle" className="action-icon" />
-            <span className="title">{process.title}</span>
-            <div className="buttons">
-              <Icon type="edit" />
-              <Icon type="delete" />
-              <Icon type="eye-o" />
-            </div>
-          </li>
-          <li className="error">
-            <Icon type="close-circle" className="action-icon" />
-            <span className="title">anw-ui-core webpack-only</span>
-            <span className="output">Last run: 5 days ago.</span>
-          </li>
-          <li className="running">
-            <Icon type="check-circle" className="action-icon" />
-            <span className="title">anw-ui-core webpack-only</span>
-          </li>
-          <li className="error">
-            <Icon type="close-circle" className="action-icon" />
-            <span className="title">anw-ui-core webpack-only</span>
-          </li>
-          <li className="running">
-            <Icon type="check-circle" className="action-icon" />
-            <span className="title">anw-ui-core webpack-only</span>
-          </li>
-          <li className="error">
-            <Icon type="close-circle" className="action-icon" />
-            <span className="title">anw-ui-core webpack-only</span>
-          </li>
-          <li className="running">
-            <Icon type="check-circle" className="action-icon" />
-            <span className="title">anw-ui-core webpack-only</span>
-          </li>
-          <li className="error">
-            <Icon type="close-circle" className="action-icon" />
-            <span className="title">anw-ui-core webpack-only</span>
-          </li>
-          <li className="running">
-            <Icon type="check-circle" className="action-icon" />
-            <span className="title">anw-ui-core webpack-only</span>
-          </li>
+          {
+            home.cmds.map(cmd => (
+              <li className={cmd.status || 'stopped'} key={cmd.id}>
+                {
+                  cmd.status === 'running' ?
+                  <Icon
+                    type="pause-circle"
+                    className="action-icon"
+                    onClick={memobind(this, 'handleStopCmd', cmd.id)}
+                  />
+                  :
+                  <Icon
+                    type="play-circle"
+                    className="action-icon"
+                    onClick={memobind(this, 'handleRunCmd', cmd.id)}
+                  />
+                }
+                
+                <span className="name">{cmd.name || cmd.cmd || 'No name.'}</span>
+                <span className="output">test</span>
+                <div className="buttons">
+                  <Icon type="eye-o" />
+                </div>
+              </li>
+            ))
+          }
         </ul>
       </div>
     );
