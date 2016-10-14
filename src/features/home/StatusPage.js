@@ -50,7 +50,7 @@ export class StatusPage extends Component {
                 {
                   cmd.status === 'running' ?
                   <Icon
-                    type="pause-circle"
+                    type="stop-circle"
                     className="action-icon"
                     onClick={memobind(this, 'handleStopCmd', cmd.id)}
                   />

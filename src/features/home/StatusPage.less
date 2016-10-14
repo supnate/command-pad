@@ -43,6 +43,24 @@
       font-size: 20px;
       color: gray;
       cursor: pointer;
+
+      &.anticon-stop-circle {
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        background-color: #4CAF50;
+        &:after {
+          position: absolute;
+          left: 6px;
+          top: 6px;
+          display: inline-block;
+          content: ' ';
+          width: 8px;
+          height: 8px;
+          border-radius: 1px;
+          background-color: #fff;
+        }
+      }
     }
 
     .name {
