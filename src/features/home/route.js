@@ -9,6 +9,6 @@ export default {
   childRoutes: [
     { component: StatusPage, isIndex: true },
     { path: 'cmd/add', component: CmdEditPage },
-    { path: 'cmd/edit', component: CmdEditPage },
+    { path: 'cmd/edit/:cmdId', component: CmdEditPage },
   ],
 };

@@ -2,8 +2,14 @@
 
 .home-status-page {
   font-family: arial;
+
+  &.loading {
+    padding: 20px;
+    text-align: center;
+  }
   .header {
-    padding: 10px;
+    padding: 10px 10px 0 10px;
+    height: 40px;
     background-color: #414751;
     .anticon {
       font-size: 20px;
@@ -19,17 +25,25 @@
       margin-left: 10px;
     }
   }
+  .content-container {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+  }
   ul, li {
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  ul {
+  ul.cmd-list {
     width: 100%;
   }
 
-  li {
+  ul.cmd-list li {
     position: relative;
     padding: 10px 40px 10px 40px;
     border-bottom: 1px solid #eee;
@@ -65,8 +79,16 @@
     }
 
     .name {
-      display: block;
-      color: #666;
+      display: inline-block;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #555;
+
+      &:hover {
+        color: #57c5f7;
+      }
     }
 
     .output {
@@ -122,4 +144,41 @@
     }
   }
 
+  .welcome {
+    font-size: 14px;
+    padding: 20px;
+    p { margin-top: 15px;}
+
+    .logos {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+    .plus {
+      margin: 0 10px;
+    }
+    .credit-logo {
+      width: 100px;
+    }
+  }
+
+  .ant-popover-arrow:after {
+    border-left-color: #000!important;
+  }
+  .ant-popover {
+    width: 80%;
+  }
+  .ant-popover-inner {
+    max-height: 200px;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    .output-list {
+      color: #28da36;
+    }
+  }
+
+  .footer {
+    padding: 10px;
+    color: #999;
+    text-align: center;
+  }
 }

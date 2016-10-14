@@ -36,6 +36,13 @@ bridge.ipcRenderer.on('CMD_OUTPUT', (evt, cmdId, outputs) => {
   });
 });
 
+bridge.ipcRenderer.on('CMDS_UPDATED', (evt, cmds) => {
+  store.dispatch({
+    type: 'CMDS_UPDATED',
+    data: { cmds },
+  });
+});
+
 render(
   <Provider store={store}>
     <Router history={history} routes={routeConfig} />

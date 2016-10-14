@@ -1,56 +1,82 @@
 'use strict';
-
+const _ = require('lodash');
 const { ipcMain } = require('electron');
-var Convert = require('ansi-to-html');
-var convert = new Convert();
+const Config = require('electron-config');
+const Convert = require('ansi-to-html');
+const pkgJson = require('../../package.json');
 const runCmd = require('./run_cmd');
 
-const cmds = [
-  {
-    id: 'nodeVersion',
-    name: 'node version',
-    cmd: 'node --version',
-    cwd: '',
-    link: '',
-    outputs: [],
-  },
-  {
-    id: 'app1:test',
-    name: 'app1:test',
-    cmd: 'npm run test',
-    cwd: '/Users/i305656/workspace/app1',
-    link: '',
-    outputs: [],
-  },
-  {
-    id: 'app1:start',
-    name: 'app1:start',
-    cmd: 'npm run start',
-    cwd: '/Users/i305656/workspace/app1',
-    link: '',
-    outputs: [],
-  },
-  {
-    id: 'ping',
-    name: 'ping baidu.com',
-    cmd: 'ping baidu.com',
-    outputs: [],
-  },
-];
+
+const convert = new Convert();
+const config = new Config();
+
+function guid() {
+  return 'xyxyxyxy'.replace(/[xy]/g, function(c) {
+    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    return v.toString(16);
+  });
+}
+
+// Ensure immutable, don't know if config.get always returns new data.
+const cmds = _.cloneDeep(config.get('cmds') || []);
+for (const c of cmds) {
+  c.outputs = [];
+}
 
 const cmdHash = {};
 cmds.forEach(cmd => cmdHash[cmd.id] = cmd); // eslint-disable-line
 
+process.on('exit', () => {
+  for (const cmd of cmds) {
+    if (cmd.process) {
+      process.kill(-cmd.process.pid);
+    }
+  }
+});
+
 ipcMain.on('GET_INIT_DATA', (evt) => {
+  const appVersion = config.get('appVersion') || pkgJson.version;
   evt.sender.send('SET_INIT_DATA', {
-    appVersion: '1.0.0',
-    cmds: cmds.map(cmd => ({
-      id: cmd.id,
-      name: cmd.name,
-      cmd: cmd.cmd,
-      status: cmd.process ? 'running' : 'stopped',
-    })),
+    appVersion,
+    cmds,
+    // cmds: cmds.map(cmd => ({
+    //   id: cmd.id,
+    //   name: cmd.name,
+    //   cmd: cmd.cmd,
+    //   status: cmd.process ? 'running' : 'stopped',
+    // })),
   });
+});
+
+ipcMain.on('SAVE_CMD', (evt, data, cmdId) => {
+  console.log('saving cmd');
+  const cmd = { id: cmdId || guid() };
+  Object.assign(cmd, {
+    name: data.name,
+    cmd: data.cmd,
+    cwd: data.cwd || null,
+    url: data.url || null,
+  });
+  const newCmds = config.get('cmds') || [];
+  if (cmdId) {
+    const i = newCmds.findIndex(c => c.id === cmdId);
+    newCmds.splice(i, 1, cmd);
+  } else {
+    newCmds.push(cmd);
+  }
+  config.set('cmds', newCmds);
+
+  // Notify UI
+  const curr = cmdId ? cmds.find(c => c.id === cmdId) : { status: 'stopped', outputs: [] };
+  Object.assign(curr, cmd);
+  if (!cmdId) {
+    cmds.push(curr);
+  }
+
+  cmdHash[cmd.id] = curr;
+
+  evt.sender.send('CMDS_UPDATED', cmds);
+  evt.sender.send('SAVE_CMD_SUCCESS', cmd);
 });
 
 ipcMain.on('RUN_CMD', (evt, cmdId) => {
@@ -66,6 +92,7 @@ ipcMain.on('RUN_CMD', (evt, cmdId) => {
 
   child.stdout.pipe(process.stdout);
   let lineId = 0;
+  cmd.outputs.length = 0;
   function onData(chunk) {
     const out = chunk.toString('utf8');
     for (const line of out.split('\n')) {

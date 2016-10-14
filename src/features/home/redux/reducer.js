@@ -3,11 +3,17 @@ import initialState from './initialState';
 import { reducer as getInitData } from './getInitData';
 import { reducer as runCmd } from './runCmd';
 import { reducer as stopCmd } from './stopCmd';
+import { reducer as saveCmd } from './saveCmd';
+import { reducer as deleteCmd } from './deleteCmd';
+import { reducer as reorderCmds } from './reorderCmds';
 
 const reducers = [
   getInitData,
   runCmd,
   stopCmd,
+  saveCmd,
+  deleteCmd,
+  reorderCmds,
 ];
 
 export default function reducer(state = initialState, action) {
@@ -34,6 +40,13 @@ export default function reducer(state = initialState, action) {
         cmds: replaceCmd(state.cmds, cmd),
       };
     }
+
+    case 'CMDS_UPDATED':
+      return {
+        ...state,
+        cmds: action.data.cmds,
+      };
+
     default:
       newState = state;
       break;
