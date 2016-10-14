@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button, Icon } from 'antd';
 import memobind from 'memobind';
+import { Link } from 'react-router';
 import * as actions from './redux/actions';
 import { findCmd } from './utils';
 
@@ -18,7 +19,9 @@ export class StatusPage extends Component {
   };
 
   componentDidMount() {
-    this.props.actions.getInitData();
+    if (!this.props.home.appVersion) {
+      this.props.actions.getInitData();
+    }
   }
 
   handleRunCmd(cmdId) {
@@ -33,13 +36,23 @@ export class StatusPage extends Component {
     return <div className="home-status-page">Loading...</div>;
   }
 
+  renderOutput(cmd) {
+    const outputs = cmd.outputs ? cmd.outputs.filter(c => !!c.text) : [];
+    if (!outputs.length) return null;
+    return (
+      <span className="output">
+        {_.last(outputs).text}
+      </span>
+    );
+  }
+
   render() {
     const { home } = this.props;
     if (!home.appVersion) return this.renderLoading();
     return (
       <div className="home-status-page">
         <div className="header">
-          <Icon type="plus" />
+          <Link to="/cmd/add"><Icon type="plus" /></Link>
           <Icon type="setting" />
           <Icon type="edit" />
         </div>
@@ -63,7 +76,8 @@ export class StatusPage extends Component {
                 }
                 
                 <span className="name">{cmd.name || cmd.cmd || 'No name.'}</span>
-                <span className="output">test</span>
+                {this.renderOutput(cmd)}
+                
                 <div className="buttons">
                   <Icon type="eye-o" />
                 </div>

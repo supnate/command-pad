@@ -2,7 +2,7 @@ import 'babel-polyfill';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { browserHistory, Router } from 'react-router';
+import { hashHistory, Router } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import 'antd/dist/antd.css';
 
@@ -10,7 +10,7 @@ import configStore from './common/configStore';
 import routeConfig from './common/routeConfig';
 
 const store = configStore();
-const history = syncHistoryWithStore(browserHistory, store);
+const history = syncHistoryWithStore(hashHistory, store);
 
 const root = document.createElement('div');
 document.body.appendChild(root);
@@ -22,6 +22,16 @@ bridge.ipcRenderer.on('CMD_FINISHED', (evt, cmdId, code) => {
     data: {
       cmdId,
       code,
+    },
+  });
+});
+
+bridge.ipcRenderer.on('CMD_OUTPUT', (evt, cmdId, outputs) => {
+  store.dispatch({
+    type: 'CMD_OUTPUT',
+    data: {
+      cmdId,
+      outputs,
     },
   });
 });

@@ -23,6 +23,17 @@ export default function reducer(state = initialState, action) {
         cmds: replaceCmd(state.cmds, cmd),
       };
     }
+
+    case 'CMD_OUTPUT': {
+      const cmd = {
+        ...findCmd(state.cmds, action.data.cmdId),
+        outputs: action.data.outputs,
+      };
+      return {
+        ...state,
+        cmds: replaceCmd(state.cmds, cmd),
+      };
+    }
     default:
       newState = state;
       break;

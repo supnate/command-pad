@@ -1,11 +1,14 @@
 import {
   StatusPage,
+  CmdEditPage,
 } from './index';
 
 export default {
   path: '',
   name: 'home',
   childRoutes: [
-    { path: 'status-page', component: StatusPage },
+    { component: StatusPage, isIndex: true },
+    { path: 'cmd/add', component: CmdEditPage },
+    { path: 'cmd/edit', component: CmdEditPage },
   ],
 };
