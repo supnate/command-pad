@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Link, hashHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import memobind from 'memobind';
 import { Button, Col, Form, Icon, Input, message, Popover, Row, Tooltip } from 'antd';
 import * as actions from './redux/actions';
 
@@ -34,25 +35,27 @@ export class CmdEditPage extends Component {
         return;
       }
       this.props.actions.saveCmd(values, cmdId).then(() => {
-        message.success('Add command success.');
+        message.success(`${cmdId ? 'Edit' : 'Add'} command success.`);
         hashHistory.push('/');
       });
     });
   }
 
   render() {
-    console.log('params: ', this.props.params);
     const { getFieldDecorator } = this.props.form;
     const cmdId = this.props.params.cmdId;
+    const initialData = cmdId ? this.props.home.cmdById[cmdId] : {};
+
     return (
       <div className="home-cmd-edit-page">
         <div className="header">
           <Link to="/"><Icon type="arrow-left" /></Link>
           <h1>{cmdId ? 'Edit' : 'Add'} Command</h1>
         </div>
-        <Form vertical required style={{ margin: 15 }} onSubmit={::this.handleSubmit}>
+        <Form vertical required style={{ margin: 15 }} onSubmit={memobind(this, 'handleSubmit')}>
           <FormItem label="Name">
             {getFieldDecorator('name', {
+              initialValue: initialData.name || '',
               rules: [
                 { required: true, whitespace: true, message: 'Name is required.' }
               ],
@@ -62,6 +65,7 @@ export class CmdEditPage extends Component {
           </FormItem>
           <FormItem label={this.getFormItemLabel('Command', 'The command to run, e.g., "npm start"')}>
             {getFieldDecorator('cmd', {
+              initialValue: initialData.cmd || '',
               rules: [
                 { required: true, message: 'Command is required.' }
               ],
@@ -70,12 +74,16 @@ export class CmdEditPage extends Component {
             )}
           </FormItem>
           <FormItem label={this.getFormItemLabel('Working directory', 'Optional. The working directory to run the command.')}>
-            {getFieldDecorator('cwd')(
+            {getFieldDecorator('cwd', {
+              initialValue: initialData.cwd || '',
+            })(
               <Input size="default" />
             )}
           </FormItem>
           <FormItem label={this.getFormItemLabel('Url', 'Optional. If provided, there will be a link icon to open the url. Usually for dev server, e.g., "http://localhost:6076".')}>
-            {getFieldDecorator('link')(
+            {getFieldDecorator('url', {
+              initialValue: initialData.url || '',
+            })(
               <Input size="default" />
             )}
           </FormItem>

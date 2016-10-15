@@ -19,33 +19,36 @@ const reducers = [
 export default function reducer(state = initialState, action) {
   let newState;
   switch (action.type) {
-    case 'CMD_FINISHED': {
-      const cmd = {
-        ...findCmd(state.cmds, action.data.cmdId),
-        status: 'stopped',
-      };
+    case 'CMD_FINISHED':
       return {
         ...state,
-        cmds: replaceCmd(state.cmds, cmd),
+        cmdById: {
+          ...state.cmdById,
+          [action.data.cmdId]: {
+            ...state.cmdById[action.data.cmdId],
+            status: 'stopped',
+            error: action.data.error || null,
+          },
+        },
       };
-    }
 
-    case 'CMD_OUTPUT': {
-      const cmd = {
-        ...findCmd(state.cmds, action.data.cmdId),
-        outputs: action.data.outputs,
-      };
+    case 'CMD_OUTPUT':
       return {
         ...state,
-        cmds: replaceCmd(state.cmds, cmd),
+        cmdById: {
+          ...state.cmdById,
+          [action.data.cmdId]: {
+            ...state.cmdById[action.data.cmdId],
+            outputs: action.data.outputs,
+          },
+        },
       };
-    }
 
-    case 'CMDS_UPDATED':
-      return {
-        ...state,
-        cmds: action.data.cmds,
-      };
+    // case 'CMDS_UPDATED':
+    //   return {
+    //     ...state,
+    //     cmds: action.data.cmds,
+    //   };
 
     default:
       newState = state;

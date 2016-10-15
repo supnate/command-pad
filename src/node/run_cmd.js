@@ -12,15 +12,4 @@ module.exports = function(cmd, cwd) {
     stdio: 'pipe',
     detached: true,
   });
-  // const promise = new Promise((resolve, reject) => {
-  //   p.on('close', (code) => {
-  //     console.log(`child process exited with code ${code}`);
-  //     resolve(code);
-  //   });
-  // });
-
-  // return {
-  //   process: p,
-  //   promise,
-  // };
 };

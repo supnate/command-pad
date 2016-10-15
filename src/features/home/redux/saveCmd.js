@@ -1,5 +1,6 @@
 import {
   SAVE_CMD_BEGIN,
+  ADD_CMD_SUCCESS,
   SAVE_CMD_SUCCESS,
   SAVE_CMD_FAILURE,
   SAVE_CMD_DISMISS_ERROR,
@@ -14,7 +15,7 @@ export function saveCmd(data, cmdId) {
       bridge.ipcRenderer.once('SAVE_CMD_SUCCESS', (evt, cmd) => {
         dispatch({
           type: SAVE_CMD_SUCCESS,
-          data: cmd,
+          data: { cmd, cmdId },
         });
         resolve();
       });
@@ -44,8 +45,15 @@ export function reducer(state, action) {
     case SAVE_CMD_SUCCESS:
       return {
         ...state,
-        saveCmdPending: false,
-        saveCmdError: null,
+        [action.data.cmdId ? null : 'cmdIds']: [...state.cmdIds, action.data.cmd.id],
+        cmdById: {
+          ...state.cmdById,
+          [action.data.cmd.id]: {
+            ...state.cmdById[action.data.cmd.id] || {},
+            ...action.data.cmd,
+            [action.data.cmdId ? null : 'status']: 'stopped',
+          },
+        },
       };
 
     case SAVE_CMD_FAILURE:

@@ -1,5 +1,6 @@
 'use strict';
 const _ = require('lodash');
+const spawn = require('child_process').spawn;
 const { ipcMain } = require('electron');
 const Config = require('electron-config');
 const Convert = require('ansi-to-html');
@@ -34,20 +35,17 @@ process.on('exit', () => {
   }
 });
 
+/* ==================== Get Init Data ============================== */
 ipcMain.on('GET_INIT_DATA', (evt) => {
   const appVersion = config.get('appVersion') || pkgJson.version;
   evt.sender.send('SET_INIT_DATA', {
     appVersion,
-    cmds,
-    // cmds: cmds.map(cmd => ({
-    //   id: cmd.id,
-    //   name: cmd.name,
-    //   cmd: cmd.cmd,
-    //   status: cmd.process ? 'running' : 'stopped',
-    // })),
+    cmds: cmds.map(c => Object.assign(_.pick(c, ['id', 'name', 'cmd', 'cwd', 'outputs', 'url']), { status: c.process ? 'running' : 'stopped' })),
   });
 });
 
+
+/* ==================== Save Command ============================== */
 ipcMain.on('SAVE_CMD', (evt, data, cmdId) => {
   console.log('saving cmd');
   const cmd = { id: cmdId || guid() };
@@ -74,23 +72,51 @@ ipcMain.on('SAVE_CMD', (evt, data, cmdId) => {
   }
 
   cmdHash[cmd.id] = curr;
-
-  evt.sender.send('CMDS_UPDATED', cmds);
   evt.sender.send('SAVE_CMD_SUCCESS', cmd);
 });
 
-ipcMain.on('RUN_CMD', (evt, cmdId) => {
-  console.log('running cmd: ', cmdId);
+/* ==================== Delete Command ============================== */
+ipcMain.on('DELETE_CMD', (evt, cmdId) => {
+  console.log('deleting cmd');
+  // Stop the process if needed
+  const cmd = cmdHash[cmdId];
+  if (cmd.process) {
+    try {
+      process.kill(-cmd.process.pid);
+    } catch(e) {} // eslint-disable-line
+  }
+  // Save to config
+  const newCmds = config.get('cmds') || [];
+  _.remove(newCmds, c => c.id === cmdId);
+  config.set('cmds', newCmds);
 
+  // Remove from store
+  _.remove(cmds, c => c.id === cmdId);
+  delete cmdHash[cmdId];
+
+  evt.sender.send('DELETE_CMD_SUCCESS', cmdId);
+});
+
+/* ==================== Run Command ============================== */
+ipcMain.on('RUN_CMD', (evt, cmdId) => {
   const cmd = cmdHash[cmdId];
   if (cmd.process) {
     // prevent from running multiple times.
     return;
   }
-  const child = runCmd(cmd.cmd, cmd.cwd || null);
-  cmd.process = child;
+  const arr = cmd.cmd.split(' ').filter(item => !!item);
+  const app = arr.shift();
+  const child = spawn(app, arr, {
+    cwd: cmd.cwd,
+    stdio: 'pipe',
+    detached: true,
+  });
+
+  evt.sender.send('RUN_CMD_SUCCESS', cmdId);
 
   child.stdout.pipe(process.stdout);
+  cmd.process = child;
+
   let lineId = 0;
   cmd.outputs.length = 0;
   function onData(chunk) {
@@ -107,13 +133,18 @@ ipcMain.on('RUN_CMD', (evt, cmdId) => {
   child.stdout.on('data', onData);
   child.stderr.on('data', onData);
 
-  child.on('close', (code) => {
-    console.log('command finished: ', code);
+  child.on('exit', (code) => {
     delete cmd.process;
     evt.sender.send('CMD_FINISHED', cmdId, code);
   });
+
+  child.on('error', (error) => {
+    delete cmd.process;
+    evt.sender.send('CMD_FINISHED', cmdId, 99, error);
+  });
 });
 
+/* ==================== Stop Command ============================== */
 ipcMain.on('STOP_CMD', (evt, cmdId) => {
   console.log('stopping cmd: ', cmdId);
   const cmd = cmdHash[cmdId];

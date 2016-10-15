@@ -1,6 +1,4 @@
 const initialState = {
-  cmds: [],
-  outputs: {},
   getInitDataPending: false,
   getInitDataError: null,
   saveCmdPending: false,
@@ -9,6 +7,8 @@ const initialState = {
   deleteCmdError: null,
   reorderCmdsPending: false,
   reorderCmdsError: null,
+  runCmdPending: false,
+  runCmdError: null,
 };
 
 export default initialState;

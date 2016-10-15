@@ -15,13 +15,14 @@ const history = syncHistoryWithStore(hashHistory, store);
 const root = document.createElement('div');
 document.body.appendChild(root);
 
-bridge.ipcRenderer.on('CMD_FINISHED', (evt, cmdId, code) => {
+bridge.ipcRenderer.on('CMD_FINISHED', (evt, cmdId, code, error) => {
   console.log('cmd finished: ', cmdId, code);
   store.dispatch({
     type: 'CMD_FINISHED',
     data: {
       cmdId,
       code,
+      error,
     },
   });
 });
@@ -36,12 +37,12 @@ bridge.ipcRenderer.on('CMD_OUTPUT', (evt, cmdId, outputs) => {
   });
 });
 
-bridge.ipcRenderer.on('CMDS_UPDATED', (evt, cmds) => {
-  store.dispatch({
-    type: 'CMDS_UPDATED',
-    data: { cmds },
-  });
-});
+// bridge.ipcRenderer.on('CMDS_UPDATED', (evt, cmds) => {
+//   store.dispatch({
+//     type: 'CMDS_UPDATED',
+//     data: { cmds },
+//   });
+// });
 
 render(
   <Provider store={store}>

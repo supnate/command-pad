@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   DELETE_CMD_BEGIN,
   DELETE_CMD_SUCCESS,
@@ -5,29 +6,21 @@ import {
   DELETE_CMD_DISMISS_ERROR,
 } from './constants';
 
-export function deleteCmd(args) {
+export function deleteCmd(cmdId) {
   return (dispatch) => {
     dispatch({
       type: DELETE_CMD_BEGIN,
     });
-    const promise = new Promise((resolve, reject) => {
-      window.setTimeout(() => {
-        if (!args.error) { // NOTE: args.error is only used for demo purpose
-          dispatch({
-            type: DELETE_CMD_SUCCESS,
-            data: {},
-          });
-          resolve();
-        } else {
-          dispatch({
-            type: DELETE_CMD_FAILURE,
-            data: {
-              error: 'some error',
-            },
-          });
-          reject();
-        }
-      }, 50);
+    const promise = new Promise((resolve) => {
+      bridge.ipcRenderer.once('DELETE_CMD_SUCCESS', () => {
+        dispatch({
+          type: DELETE_CMD_SUCCESS,
+          data: { cmdId },
+        });
+        resolve();
+      });
+
+      bridge.ipcRenderer.send('DELETE_CMD', cmdId);
     });
 
     return promise;
@@ -49,12 +42,19 @@ export function reducer(state, action) {
         deleteCmdError: null,
       };
 
-    case DELETE_CMD_SUCCESS:
+    case DELETE_CMD_SUCCESS: {
+      const cmdId = action.data.cmdId;
+      const cmdIds = state.cmdIds.slice();
+      _.pull(cmdIds, cmdId);
+      const cmdById = { ...state.cmdById };
+      delete cmdById[cmdId];
+
       return {
         ...state,
-        deleteCmdPending: false,
-        deleteCmdError: null,
+        cmdIds,
+        cmdById,
       };
+    }
 
     case DELETE_CMD_FAILURE:
       return {

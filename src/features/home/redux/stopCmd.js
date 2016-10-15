@@ -1,4 +1,3 @@
-import { findCmd, replaceCmd } from '../utils';
 import {
   STOP_CMD,
 } from './constants';
