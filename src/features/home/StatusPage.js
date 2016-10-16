@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { Button, Col, Form, Icon, Input, Modal, Popover, Row } from 'antd';
 import memobind from 'memobind';
 import { Link } from 'react-router';
+import CmdList from './CmdList';
 import * as actions from './redux/actions';
 import { findCmd } from './utils';
 import Welcome from './Welcome';
@@ -16,156 +17,69 @@ export class StatusPage extends Component {
     actions: PropTypes.object.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+    this.handleBeginEdit = this.handleBeginEdit.bind(this);
+    this.handleEndEdit = this.handleEndEdit.bind(this);
+  }
+
   state = {
     editing: false,
   };
 
   componentDidMount() {
     if (!this.props.home.appVersion) {
-      this.props.actions.getInitData();
+      this.props.actions.getInitData()
+        .then(() => this.setState({
+          cmds: this.props.home.cmdIds.map(id => this.props.home.cmdById[id]).slice(),
+        }));
     }
   }
 
-  getOutputPopover(cmdId) {
-    const cmd = this.props.home.cmdById[cmdId];
-    if (!cmd.outputs || !cmd.outputs.length) return null;
-    return (
-      <ul className="output-list">
-        {
-          cmd.outputs.map(line => <li key={line.id}>{line.text}</li>)
-        }
-      </ul>
-    );
+  handleBeginEdit() {
+    this.setState({
+      editing: true,
+    });
   }
 
-  getTooltipContainer() {
-    return document.getElementById('status-list-container');
-  }
-
-  handleRunCmd(cmdId) {
-    this.props.actions.runCmd(cmdId);
-  }
-
-  handleStopCmd(cmdId) {
-    this.props.actions.stopCmd(cmdId);
-  }
-
-  handleDeleteCmd(cmdId) {
-    const cmd = this.props.home.cmdById[cmdId];
-    if (cmd.status !== 'stopped') {
-      Modal.confirm({
-        title: 'The command is running',
-        content: 'Do you want stop and delete it?',
-        okText: 'Ok',
-        cancelText: 'Cancel',
-        onOk: () => {
-          this.props.actions.deleteCmd(cmdId);
-        }
-      });
-    } else {
-      this.props.actions.deleteCmd(cmdId);
-    }
+  handleEndEdit() {
+    this.setState({
+      editing: false,
+    });
   }
 
   renderLoading() {
     return <div className="home-status-page loading">Loading...</div>;
   }
 
-  renderOutput(cmd) {
-    if (cmd.error) {
-      let errMsg;
-      if (cmd.error.errno === 'ENOENT') errMsg = 'failed to execute the command.';
-      else errMsg = cmd.error.message || cmd.error.toString();
-      return (
-        <span className="output error">
-          Error: {errMsg}
-        </span>
-      );
-    }
-    const outputs = cmd.outputs ? cmd.outputs.filter(c => !!c.text) : [];
-    if (!outputs.length) return null;
-    return (
-      <span className="output">
-        {_.last(outputs).text}
-      </span>
-    );
-  }
-
-  renderActionAction(cmd) {
-    switch (cmd.status) {
-      case 'running':
-      case 'starting':
-      case 'stopping':
-        return (
-          <Icon
-            title="Stop"
-            type="stop-circle"
-            className="action-icon"
-            onClick={memobind(this, 'handleStopCmd', cmd.id)}
-          />
-        );
-        // return (
-        //   <Icon
-        //     type="loading"
-        //     className="action-icon"
-        //   />
-        // );
-      case 'stopped':
-        return (
-          <Icon
-            title="Start"
-            type="play-circle"
-            className="action-icon"
-            onClick={memobind(this, 'handleRunCmd', cmd.id)}
-          />
-        );
-      default:
-        return null;
-    }
-  }
-
   render() {
     const { home } = this.props;
+    const { runCmd, stopCmd, deleteCmd, reorderCmds } = this.props.actions;
+    const { editing } = this.state;
     if (!home.appVersion) return this.renderLoading();
+
     const allCmds = home.cmdIds.map(id => home.cmdById[id]);
 
     return (
       <div className="home-status-page">
         <div className="header">
-          <Link to="/cmd/add"><Icon type="plus" /></Link>
-          <Icon type="setting" />
-          <Icon type="edit" />
+          {!editing && <Link to="/cmd/add"><Icon type="plus" /></Link>}
+          {!editing && <Link to="/about"><Icon type="info-circle-o" title="About" /></Link>}
+          {!editing && <Icon type="edit" title="Edit" onClick={this.handleBeginEdit} />}
+          {editing && <Button type="primary" size="small" onClick={this.handleEndEdit} style={{ float: 'right' }}>End Editing</Button>}
         </div>
         <div className="content-container" id="status-list-container">
-          <ul className="cmd-list">
-            {allCmds.map(cmd => (
-              <li className={cmd.status || 'stopped'} key={cmd.id}>
-                {this.renderActionAction(cmd)}
-
-                <Link to={`/cmd/edit/${cmd.id}`} className="name">{cmd.name || cmd.cmd || 'No name.'}</Link>
-                {this.renderOutput(cmd)}
-
-                <div className="buttons">
-                  <Icon type="delete" onClick={memobind(this, 'handleDeleteCmd', cmd.id)} />
-                  {
-                    cmd.outputs && cmd.outputs.length > 0 &&
-                    <Popover
-                      trigger="hover"
-                      content={this.getOutputPopover(cmd.id)}
-                      placement="left"
-                      getTooltipContainer={this.getTooltipContainer}
-                      arrowPointAtCenter
-                    >
-                      <Icon type="eye-o" />
-                    </Popover>
-                  }
-                </div>
-              </li>
-            ))}
-          </ul>
+          <CmdList
+            cmds={allCmds}
+            runCmd={runCmd}
+            stopCmd={stopCmd}
+            deleteCmd={deleteCmd}
+            reorderCmds={reorderCmds}
+            editing={editing}
+          />
           {allCmds.length > 0 ?
             <div className="footer">
-              Total: {allCmds.length} commands.
+              Total {allCmds.length} command{allCmds.length > 1 ? 's' : ''}, {allCmds.filter(c => c.status === 'running').length} running.
             </div>
           : <Welcome />
           }

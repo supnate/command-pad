@@ -18,12 +18,12 @@ export class CmdEditPage extends Component {
 
   getFormItemLabel(name, tooltip) {
     return (
-      <Tooltip title={tooltip}>
-        <span>
-          <span>{name}</span>
+      <span>
+        <span>{name}</span>
+        <Tooltip title={tooltip}>
           <Icon type="question-circle-o" />
-        </span>
-      </Tooltip>
+        </Tooltip>
+      </span>
     );
   }
 
@@ -35,7 +35,7 @@ export class CmdEditPage extends Component {
         return;
       }
       this.props.actions.saveCmd(values, cmdId).then(() => {
-        message.success(`${cmdId ? 'Edit' : 'Add'} command success.`);
+        message.success(`${cmdId ? 'Edit' : 'Add'} success.`);
         hashHistory.push('/');
       });
     });
@@ -80,7 +80,7 @@ export class CmdEditPage extends Component {
               <Input size="default" />
             )}
           </FormItem>
-          <FormItem label={this.getFormItemLabel('Url', 'Optional. If provided, there will be a link icon to open the url. Usually for dev server, e.g., "http://localhost:6076".')}>
+          <FormItem label={this.getFormItemLabel('Url', 'Optional. If provided, there will be a icon to open the link. Usually for dev servers, e.g., "http://localhost:6076".')}>
             {getFieldDecorator('url', {
               initialValue: initialData.url || '',
             })(

@@ -19,7 +19,7 @@ function guid() {
 }
 
 // Ensure immutable, don't know if config.get always returns new data.
-const cmds = _.cloneDeep(config.get('cmds') || []);
+let cmds = _.cloneDeep(config.get('cmds') || []);
 for (const c of cmds) {
   c.outputs = [];
 }
@@ -95,6 +95,24 @@ ipcMain.on('DELETE_CMD', (evt, cmdId) => {
   delete cmdHash[cmdId];
 
   evt.sender.send('DELETE_CMD_SUCCESS', cmdId);
+});
+
+/* ==================== Reorder Commands ============================== */
+ipcMain.on('REORDER_CMDS', (evt, cmdIds) => {
+  console.log('reordering cmds');
+
+  // Save to config
+  let newCmds = config.get('cmds') || [];
+  const groups = _.groupBy(newCmds, 'id');
+  newCmds = cmdIds.map(id => groups[id][0]);
+  config.set('cmds', newCmds);
+
+  // Update store order
+  for (let i = 0; i < cmds.length; i++) {
+    cmds[i] = cmdHash[cmdIds[i]];
+  }
+
+  evt.sender.send('REORDER_CMDS_SUCCESS', cmdIds);
 });
 
 /* ==================== Run Command ============================== */

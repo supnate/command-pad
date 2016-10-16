@@ -9,7 +9,7 @@ let win
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({width: 880, height: 600})
+  win = new BrowserWindow({width: 880, height: 600, icon: `${__dirname}/../images/logo.png`});
 
   // and load the index.html of the app.
   // win.loadURL(`file://${__dirname}/index.html`)

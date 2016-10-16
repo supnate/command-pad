@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   REORDER_CMDS_BEGIN,
   REORDER_CMDS_SUCCESS,
@@ -5,29 +6,21 @@ import {
   REORDER_CMDS_DISMISS_ERROR,
 } from './constants';
 
-export function reorderCmds(args) {
+export function reorderCmds(cmdIds) {
   return (dispatch) => {
     dispatch({
       type: REORDER_CMDS_BEGIN,
     });
-    const promise = new Promise((resolve, reject) => {
-      window.setTimeout(() => {
-        if (!args.error) { // NOTE: args.error is only used for demo purpose
-          dispatch({
-            type: REORDER_CMDS_SUCCESS,
-            data: {},
-          });
-          resolve();
-        } else {
-          dispatch({
-            type: REORDER_CMDS_FAILURE,
-            data: {
-              error: 'some error',
-            },
-          });
-          reject();
-        }
-      }, 50);
+    const promise = new Promise((resolve) => {
+      bridge.ipcRenderer.once('REORDER_CMDS_SUCCESS', () => {
+        dispatch({
+          type: REORDER_CMDS_SUCCESS,
+          data: { cmdIds },
+        });
+        resolve();
+      });
+
+      bridge.ipcRenderer.send('REORDER_CMDS', cmdIds);
     });
 
     return promise;
@@ -52,6 +45,7 @@ export function reducer(state, action) {
     case REORDER_CMDS_SUCCESS:
       return {
         ...state,
+        cmdIds: action.data.cmdIds,
         reorderCmdsPending: false,
         reorderCmdsError: null,
       };
