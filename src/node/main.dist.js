@@ -9,13 +9,12 @@ let win;
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({width: 860, height: 600});
+win = new BrowserWindow({width: 360, height: 600});
 
   // and load the index.html of the app.
-  win.loadURL('http://localhost:6076/');
+win.loadURL(`file://${__dirname}/../index.html`);
 
   // Open the DevTools.
-  win.webContents.openDevTools()
 
   // Emitted when the window is closed.
   win.on('closed', () => {

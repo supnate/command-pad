@@ -14,14 +14,14 @@ export class AboutPage extends Component {
 
   render() {
     return (
-      <div className="home-about-page">
+      <div className="rekit-page home-about-page">
         <div className="header">
-          <Icon type="arrow-left" onClick={() => hashHistory.push('/')} />
+          <Icon type="close" onClick={() => hashHistory.push('/')} style={{ float: 'right' }} />
           <h1>About</h1>
         </div>
         <div className="page-content">
           <div className="title-wrapper">
-            <img src="../../images/logo.png" className="logo" />
+            <img src={require('../../images/logo.png')} alt="logo" className="logo" />
             <h2>Command Pad</h2>
             <div>Version 0.1.1</div>
           </div>
@@ -30,8 +30,13 @@ export class AboutPage extends Component {
           <ALink url="https://github.com/supnate/command-pad">https://github.com/supnate/command-pad</ALink>
           <h3>Powered by</h3>
           <p className="powered-by">
-            <img src="../../images/electron_logo.png" /><br />
-            <img className="rekit-logo" src="../../images/rekit_logo.png" />
+            <ALink url="https://github.com/electron/electron">
+              <img alt="electron logo" src={require('../../images/electron_logo.png')} />
+            </ALink>
+            <br />
+            <ALink url="https://github.com/supnate/rekit">
+              <img alt="rekit logo" className="rekit-logo" src={require('../../images/rekit_logo.png')} />
+            </ALink>
           </p>
           <h3>Creator</h3>
           <p>

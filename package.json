@@ -1,10 +1,13 @@
 {
   "name": "command-pad",
+  "productName": "Command Pad",
   "version": "0.0.1",
   "description": "GUI for running terminal commands.",
   "main": "src/node/main.js",
   "scripts": {
     "electron": "electron ./",
+    "electron:build": "electron ./build",
+    "pkg:osx": "electron-packager ./build",
     "start": "node ./tools/server.js",
     "build": "node ./tools/build.js",
     "test": "node ./tools/run_test.js app",
@@ -82,6 +85,7 @@
     "babel-polyfill": "^6.13.0",
     "electron": "^1.4.3",
     "electron-config": "^0.2.1",
+    "electron-packager": "^8.1.0",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.14.2",
     "memobind": "^0.5.0",

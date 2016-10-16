@@ -49,7 +49,7 @@ export class StatusPage extends Component {
   }
 
   renderLoading() {
-    return <div className="home-status-page loading">Loading...</div>;
+    return <div className="home-status-page loading"></div>;
   }
 
   render() {
@@ -61,14 +61,14 @@ export class StatusPage extends Component {
     const allCmds = home.cmdIds.map(id => home.cmdById[id]);
 
     return (
-      <div className="home-status-page">
+      <div className="rekit-page home-status-page">
         <div className="header">
           {!editing && <Link to="/cmd/add"><Icon type="plus" /></Link>}
           {!editing && <Link to="/about"><Icon type="info-circle-o" title="About" /></Link>}
           {!editing && <Icon type="edit" title="Edit" onClick={this.handleBeginEdit} />}
           {editing && <Button type="primary" size="small" onClick={this.handleEndEdit} style={{ float: 'right' }}>End Editing</Button>}
         </div>
-        <div className="content-container" id="status-list-container">
+        <div className="page-content" id="status-list-container">
           <CmdList
             cmds={allCmds}
             runCmd={runCmd}

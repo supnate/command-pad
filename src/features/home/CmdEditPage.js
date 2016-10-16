@@ -47,51 +47,53 @@ export class CmdEditPage extends Component {
     const initialData = cmdId ? this.props.home.cmdById[cmdId] : {};
 
     return (
-      <div className="home-cmd-edit-page">
+      <div className="rekit-page home-cmd-edit-page">
         <div className="header">
           <Link to="/"><Icon type="arrow-left" /></Link>
           <h1>{cmdId ? 'Edit' : 'Add'} Command</h1>
         </div>
-        <Form vertical required style={{ margin: 15 }} onSubmit={memobind(this, 'handleSubmit')}>
-          <FormItem label="Name">
-            {getFieldDecorator('name', {
-              initialValue: initialData.name || '',
-              rules: [
-                { required: true, whitespace: true, message: 'Name is required.' }
-              ],
-            })(
-              <Input size="default" />
-            )}
-          </FormItem>
-          <FormItem label={this.getFormItemLabel('Command', 'The command to run, e.g., "npm start"')}>
-            {getFieldDecorator('cmd', {
-              initialValue: initialData.cmd || '',
-              rules: [
-                { required: true, message: 'Command is required.' }
-              ],
-            })(
-              <Input size="default" />
-            )}
-          </FormItem>
-          <FormItem label={this.getFormItemLabel('Working directory', 'Optional. The working directory to run the command.')}>
-            {getFieldDecorator('cwd', {
-              initialValue: initialData.cwd || '',
-            })(
-              <Input size="default" />
-            )}
-          </FormItem>
-          <FormItem label={this.getFormItemLabel('Url', 'Optional. If provided, there will be a icon to open the link. Usually for dev servers, e.g., "http://localhost:6076".')}>
-            {getFieldDecorator('url', {
-              initialValue: initialData.url || '',
-            })(
-              <Input size="default" />
-            )}
-          </FormItem>
-          <FormItem className="buttons">
-            <Button size="default" type="primary" htmlType="submit">Ok</Button>
-            <Button size="default" onClick={() => hashHistory.push('/')}>Cancel</Button>
-          </FormItem>
-        </Form>
+        <div className="page-content">
+          <Form vertical required style={{ margin: 15 }} onSubmit={memobind(this, 'handleSubmit')}>
+            <FormItem label="Name">
+              {getFieldDecorator('name', {
+                initialValue: initialData.name || '',
+                rules: [
+                  { required: true, whitespace: true, message: 'Name is required.' }
+                ],
+              })(
+                <Input size="default" />
+              )}
+            </FormItem>
+            <FormItem label={this.getFormItemLabel('Command', 'The command to run, e.g., "npm start"')}>
+              {getFieldDecorator('cmd', {
+                initialValue: initialData.cmd || '',
+                rules: [
+                  { required: true, message: 'Command is required.' }
+                ],
+              })(
+                <Input size="default" />
+              )}
+            </FormItem>
+            <FormItem label={this.getFormItemLabel('Working directory', 'Optional. The working directory to run the command.')}>
+              {getFieldDecorator('cwd', {
+                initialValue: initialData.cwd || '',
+              })(
+                <Input size="default" />
+              )}
+            </FormItem>
+            <FormItem label={this.getFormItemLabel('Url', 'Optional. If provided, there will be a icon to open the link. Usually for dev servers, e.g., "http://localhost:6076".')}>
+              {getFieldDecorator('url', {
+                initialValue: initialData.url || '',
+              })(
+                <Input size="default" />
+              )}
+            </FormItem>
+            <FormItem className="buttons">
+              <Button size="default" type="primary" htmlType="submit">Ok</Button>
+              <Button size="default" onClick={() => hashHistory.push('/')}>Cancel</Button>
+            </FormItem>
+          </Form>
+        </div>
       </div>
     );
   }

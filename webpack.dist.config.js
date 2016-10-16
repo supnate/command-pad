@@ -15,14 +15,14 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'build/static'),
     filename: '[name].bundle.js',
-    publicPath: '/static/'
+    publicPath: './static/'
   },
   plugins: [
-    new LodashModuleReplacementPlugin(),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin(),
+    // new LodashModuleReplacementPlugin(),
+    // new webpack.optimize.DedupePlugin(),
+    // new webpack.optimize.UglifyJsPlugin(),
+    // new webpack.optimize.OccurenceOrderPlugin(),
+    // new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.DefinePlugin({
       ENV: '"dist"',
       'process.env': {
