@@ -2,6 +2,7 @@ import {
   StatusPage,
   CmdEditPage,
   AboutPage,
+  SettingsPage,
 } from './index';
 
 export default {
@@ -12,5 +13,6 @@ export default {
     { path: 'cmd/add', component: CmdEditPage },
     { path: 'cmd/edit/:cmdId', component: CmdEditPage },
     { path: 'about', component: AboutPage },
+    { path: 'settings', component: SettingsPage },
   ],
 };

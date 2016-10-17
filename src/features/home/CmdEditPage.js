@@ -3,7 +3,7 @@ import { Link, hashHistory } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import memobind from 'memobind';
-import { Button, Col, Form, Icon, Input, message, Popover, Row, Tooltip } from 'antd';
+import { Button, Checkbox, Col, Form, Icon, Input, message, Popover, Row, Tooltip } from 'antd';
 import * as actions from './redux/actions';
 
 const FormItem = Form.Item;
@@ -74,6 +74,14 @@ export class CmdEditPage extends Component {
                 <Input size="default" />
               )}
             </FormItem>
+            <FormItem>
+              {getFieldDecorator('sudo', {
+                valuePropName: 'checked',
+                initialValue: !!initialData.sudo,
+              })(
+                <Checkbox>{this.getFormItemLabel('Sudo', 'Whether the command needs administrative privileges.')}</Checkbox>
+              )}
+            </FormItem>
             <FormItem label={this.getFormItemLabel('Working directory', 'Optional. The working directory to run the command.')}>
               {getFieldDecorator('cwd', {
                 initialValue: initialData.cwd || '',
@@ -88,6 +96,7 @@ export class CmdEditPage extends Component {
                 <Input size="default" />
               )}
             </FormItem>
+            
             <FormItem className="buttons">
               <Button size="default" type="primary" htmlType="submit">Ok</Button>
               <Button size="default" onClick={() => hashHistory.push('/')}>Cancel</Button>

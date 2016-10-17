@@ -5,6 +5,7 @@ import CmdList from './CmdList';
 import CmdListItem from './CmdListItem';
 import AboutPage from './AboutPage';
 import ALink from './ALink';
+import SettingsPage from './SettingsPage';
 
 export {
   StatusPage,
@@ -14,4 +15,5 @@ export {
   CmdListItem,
   AboutPage,
   ALink,
+  SettingsPage,
 };

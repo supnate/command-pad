@@ -65,6 +65,7 @@ export class StatusPage extends Component {
         <div className="header">
           {!editing && <Link to="/cmd/add"><Icon type="plus" /></Link>}
           {!editing && <Link to="/about"><Icon type="info-circle-o" title="About" /></Link>}
+          {!editing && <Link to="/settings"><Icon type="setting" /></Link>}
           {!editing && allCmds.length > 0 && <Icon type="edit" title="Edit" onClick={this.handleBeginEdit} />}
           {editing && <Button type="primary" size="small" onClick={this.handleEndEdit} style={{ float: 'right' }}>End Editing</Button>}
         </div>

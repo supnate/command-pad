@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom';
 import { Link } from 'react-router';
 import _ from 'lodash';
 import { DragSource, DropTarget } from 'react-dnd';
-import { Icon, Modal, Popover } from 'antd';
+import { Icon, Input, Modal, Popover } from 'antd';
 import ALink from './ALink';
 
 function collectDragSource(connect, monitor) {
@@ -104,7 +104,17 @@ class CmdListItem extends PureComponent {
     this.handleRunCmd = this.handleRunCmd.bind(this);
     this.handleStopCmd = this.handleStopCmd.bind(this);
     this.handleDeleteCmd = this.handleDeleteCmd.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.handlePasswordOk = this.handlePasswordOk.bind(this);
+    this.handlePasswordKeyUp = this.handlePasswordKeyUp.bind(this);
+    this.handlePasswordInputShow = this.handlePasswordInputShow.bind(this);
+    this.hidePasswordDialog = () => this.setState({ isPasswordDialogVisible: false });
   }
+
+  state = {
+    isPasswordDialogVisible: false,
+    password: null,
+  };
 
   getTooltipContainer() {
     return document.getElementById('status-list-container') || document.body;
@@ -131,7 +141,38 @@ class CmdListItem extends PureComponent {
   }
 
   handleRunCmd() {
+    const cmd = this.props.cmd;
+    if (cmd.sudo) {
+      this.setState({
+        isPasswordDialogVisible: true,
+      }, () => {
+        this.iptPwd.refs.input.focus();
+      });
+      return;
+    }
     this.props.runCmd(this.props.cmd.id);
+  }
+
+  handlePasswordChange(evt) {
+    this.setState({
+      password: evt.target.value,
+    });
+  }
+
+  handlePasswordKeyUp(evt) {
+    if (evt.key === 'Enter') {
+      this.handlePasswordOk();
+    }
+  }
+
+  handlePasswordInputShow(iptPwd) {
+    this.iptPwd = iptPwd;
+  }
+  handlePasswordOk() {
+    this.setState({
+      isPasswordDialogVisible: false,
+    });
+    this.props.runCmd(this.props.cmd.id, this.state.password);
   }
 
   handleStopCmd() {
@@ -214,10 +255,22 @@ class CmdListItem extends PureComponent {
 
     return connectDragSource(connectDropTarget(
       <li className={`home-command-list-item ${cmd.status || 'stopped'}`} style={{ opacity: isDragging ? 0 : 1 }}>
+        <Modal
+          title="Sudo password:"
+          wrapClassName="cmd-pwd-modal"
+          visible={this.state.isPasswordDialogVisible}
+          onOk={this.handlePasswordOk}
+          onCancel={this.hidePasswordDialog}
+          okText="Ok"
+          cancelText="Cancel"
+        >
+          <p><Input value={this.state.password} ref={this.handlePasswordInputShow} type="password" onChange={this.handlePasswordChange} onKeyUp={this.handlePasswordKeyUp}/></p>
+        </Modal>
+
         {this.renderActionIcon(cmd)}
 
         {cmd.url && <ALink className="url-link" url={cmd.url}><Icon type="link" />{this.getPortString(cmd)}</ALink>}
-        <Link to={`/cmd/edit/${cmd.id}`} title={cmd.cmd} className="name">{cmd.name || cmd.cmd || 'No name.'}</Link>
+        <Link to={`/cmd/edit/${cmd.id}`} title={cmd.cmd} className="name">{cmd.name || cmd.cmd || 'No name.'}{cmd.sudo && <span className="sudo-icon">S</span>}</Link>
         {!editing && this.renderOutput(cmd)}
 
         <div className="buttons">

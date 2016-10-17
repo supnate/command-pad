@@ -6,7 +6,7 @@ import {
   RUN_CMD_DISMISS_ERROR,
 } from './constants';
 
-export function runCmd(cmdId) {
+export function runCmd(cmdId, pwd) {
   return (dispatch) => {
     dispatch({
       type: RUN_CMD_BEGIN,
@@ -30,7 +30,7 @@ export function runCmd(cmdId) {
       //   reject();
       // });
 
-      bridge.ipcRenderer.send('RUN_CMD', cmdId);
+      bridge.ipcRenderer.send('RUN_CMD', cmdId, pwd);
     });
 
     return promise;
