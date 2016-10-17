@@ -9,6 +9,8 @@ const initialState = {
   reorderCmdsError: null,
   runCmdPending: false,
   runCmdError: null,
+  saveSettingsPending: false,
+  saveSettingsError: null,
 };
 
 export default initialState;

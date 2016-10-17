@@ -4,6 +4,7 @@ import { saveCmd, dismissSaveCmdError } from './saveCmd';
 import { deleteCmd, dismissDeleteCmdError } from './deleteCmd';
 import { reorderCmds, dismissReorderCmdsError } from './reorderCmds';
 import { runCmd, dismissRunCmdError } from './runCmd';
+import { saveSettings, dismissSaveSettingsError } from './saveSettings';
 // AUTO MAINTAINED FILE: DO NOT CHANGE
 
 
@@ -19,4 +20,6 @@ export {
   dismissReorderCmdsError,
   runCmd,
   dismissRunCmdError,
+  saveSettings,
+  dismissSaveSettingsError,
 };

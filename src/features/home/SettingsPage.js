@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { Link } from 'react-router';
+import { hashHistory, Link } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Icon } from 'antd';
+import { Button, Checkbox, Col, Form, Icon, Input, message, Popover, Row, Tooltip } from 'antd';
 import * as actions from './redux/actions';
+
+const FormItem = Form.Item;
 
 export class SettingsPage extends Component {
   static propTypes = {
@@ -11,7 +13,29 @@ export class SettingsPage extends Component {
     actions: PropTypes.object.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  getFormItemLabel(name, tooltip) {
+    return (
+      <span>
+        <span>{name}</span>
+        <Tooltip title={tooltip}>
+          <Icon type="question-circle-o" />
+        </Tooltip>
+      </span>
+    );
+  }
+
+  handleSubmit(evt) {
+    evt.preventDefault();
+    
+  }
+
   render() {
+    const { getFieldDecorator } = this.props.form;
     return (
       <div className="rekit-page home-settings-page">
         <div className="header">
@@ -19,12 +43,26 @@ export class SettingsPage extends Component {
           <h1>Settings</h1>
         </div>
         <div className="page-content">
-          Settings Page.
+          <Form vertical required style={{ margin: 15 }} onSubmit={this.handleSubmit}>
+            <FormItem label={this.getFormItemLabel('Environment path', 'The environment path to find the command. You may need to set this when using nvm.')}>
+              {getFieldDecorator('envPath', {
+                initialValue: this.props.home.envPath || '',
+              })(
+                <Input size="default" />
+              )}
+            </FormItem>
+            <FormItem className="buttons">
+              <Button size="default" type="primary" htmlType="submit">Ok</Button>
+              <Button size="default" onClick={() => hashHistory.push('/')}>Cancel</Button>
+            </FormItem>
+          </Form>
         </div>
       </div>
     );
   }
 }
+
+SettingsPage = Form.create()(SettingsPage);
 
 /* istanbul ignore next */
 function mapStateToProps(state) {
