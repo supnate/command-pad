@@ -254,7 +254,7 @@ class CmdListItem extends PureComponent {
     } = this.props;
 
     return connectDragSource(connectDropTarget(
-      <li className={`home-command-list-item ${cmd.status || 'stopped'}`} style={{ opacity: isDragging ? 0 : 1 }}>
+      <li className={`home-cmd-list-item ${cmd.status || 'stopped'}`} style={{ opacity: isDragging ? 0 : 1 }}>
         <Modal
           title="Sudo password:"
           wrapClassName="cmd-pwd-modal"
@@ -270,7 +270,7 @@ class CmdListItem extends PureComponent {
         {this.renderActionIcon(cmd)}
 
         {cmd.url && <ALink className="url-link" url={cmd.url}><Icon type="link" />{this.getPortString(cmd)}</ALink>}
-        <Link to={`/cmd/edit/${cmd.id}`} title={cmd.cmd} className="name">{cmd.name || cmd.cmd || 'No name.'}{cmd.sudo && <span className="sudo-icon">S</span>}</Link>
+        <Link to={`/cmd/edit/${cmd.id}`} title={`${cmd.sudo ? 'sudo ' : ''}${cmd.cmd}`} className="name">{cmd.name || cmd.cmd || 'No name.'}{cmd.sudo && <span className="sudo-icon">S</span>}</Link>
         {!editing && this.renderOutput(cmd)}
 
         <div className="buttons">
