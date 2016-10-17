@@ -13,7 +13,7 @@ module.exports = {
     ],
   },
   output: {
-    path: path.join(__dirname, 'build/static'),
+    path: path.join(__dirname, 'app/static'),
     filename: '[name].bundle.js',
     publicPath: './static/'
   },

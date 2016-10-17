@@ -6,17 +6,15 @@ require('./main_service');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
-let willQuitApp = false;
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({width: 860, height: 600 });
+win = new BrowserWindow({width: 360, height: 600});
 
   // and load the index.html of the app.
-  win.loadURL('http://localhost:6076/');
+win.loadURL(`file://${__dirname}/../index.html`);
 
   // Open the DevTools.
-  win.webContents.openDevTools()
 
   // Emitted when the window is closed.
   win.on('closed', () => {
@@ -25,22 +23,8 @@ function createWindow () {
     // when you should delete the corresponding element.
     win = null
   })
-
-  win.on('close', (e) => {
-    if (willQuitApp) {
-      /* the user tried to quit the app */
-      win = null;
-    } else {
-      /* the user only tried to close the window */
-      e.preventDefault();
-      win.hide();
-    }
-  });
 }
 
-app.on('before-quit', () => {
-  willQuitApp = true;
-});
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -60,8 +44,6 @@ app.on('activate', () => {
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
     createWindow()
-  } else {
-    win.show()
   }
 })
 

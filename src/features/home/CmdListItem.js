@@ -116,7 +116,7 @@ class CmdListItem extends PureComponent {
     return (
       <ul className="output-list">
         {
-          cmd.outputs.map(line => <li key={line.id}>{line.text}</li>)
+          cmd.outputs.map(line => <li key={line.id} dangerouslySetInnerHTML={{__html: line.text}}></li>)
         }
       </ul>
     );
@@ -170,8 +170,7 @@ class CmdListItem extends PureComponent {
     const outputs = cmd.outputs ? cmd.outputs.filter(c => !!c.text) : [];
     if (!outputs.length) return null;
     return (
-      <span className="output">
-        {_.last(outputs).text}
+      <span className="output" dangerouslySetInnerHTML={{__html: _.last(outputs).text}}>
       </span>
     );
   }

@@ -23,7 +23,7 @@ export class AboutPage extends Component {
           <div className="title-wrapper">
             <img src={require('../../images/logo.png')} alt="logo" className="logo" />
             <h2>Command Pad</h2>
-            <div>Version 0.1.1</div>
+            <div>Version {this.props.home.appVersion}</div>
           </div>
           <p>Command Pad is a central place for managing all of your command line apps.</p>
           <p>Any questions or advice? Please visit:</p>

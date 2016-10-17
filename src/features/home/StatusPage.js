@@ -65,7 +65,7 @@ export class StatusPage extends Component {
         <div className="header">
           {!editing && <Link to="/cmd/add"><Icon type="plus" /></Link>}
           {!editing && <Link to="/about"><Icon type="info-circle-o" title="About" /></Link>}
-          {!editing && <Icon type="edit" title="Edit" onClick={this.handleBeginEdit} />}
+          {!editing && allCmds.length > 0 && <Icon type="edit" title="Edit" onClick={this.handleBeginEdit} />}
           {editing && <Button type="primary" size="small" onClick={this.handleEndEdit} style={{ float: 'right' }}>End Editing</Button>}
         </div>
         <div className="page-content" id="status-list-container">
@@ -77,7 +77,7 @@ export class StatusPage extends Component {
             reorderCmds={reorderCmds}
             editing={editing}
           />
-          {allCmds.length > 0 ?
+          {(allCmds.length > 0 || editing )?
             <div className="footer">
               Total {allCmds.length} command{allCmds.length > 1 ? 's' : ''}, {allCmds.filter(c => c.status === 'running').length} running.
             </div>

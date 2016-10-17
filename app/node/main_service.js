@@ -29,7 +29,7 @@ cmds.forEach(cmd => cmdHash[cmd.id] = cmd); // eslint-disable-line
 process.on('exit', () => {
   for (const cmd of cmds) {
     if (cmd.process) {
-      cmd.process.destroy();
+      process.kill(-cmd.process.pid);
     }
   }
 });
@@ -186,22 +186,19 @@ ipcMain.on('RUN_CMD', (evt, cmdId) => {
     env: process.env
   });
 
-  let lineId = 0;
-  cmd.outputs.length = 0;
   term.on('data', function(chunk) {
     const out = chunk.toString('utf8');
     for (const line of out.split('\n')) {
       if (cmd.outputs.length >= 10) cmd.outputs.unshift();
       cmd.outputs.push({
         id: `${cmdId}_${lineId++}`, //eslint-disable-line
-        text: convert.toHtml(line.replace(/\s/g, '&nbsp;')),
+        text: line,
       });
     }
     evt.sender.send('CMD_OUTPUT', cmdId, [].concat(cmd.outputs));
   });
 
   term.on('exit', (code) => {
-    console.log('onexit',code);
     delete cmd.process;
     evt.sender.send('CMD_FINISHED', cmdId, code);
   });
@@ -215,7 +212,7 @@ ipcMain.on('STOP_CMD', (evt, cmdId) => {
   console.log('stopping cmd: ', cmdId);
   const cmd = cmdHash[cmdId];
   if (cmd.process) {
-    cmd.process.destroy();
+    process.kill(-cmd.process.pid);
   }
 });
 

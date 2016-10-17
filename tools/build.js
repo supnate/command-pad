@@ -12,10 +12,15 @@ const pkgJson = require('../package.json');
 config.warnings = true;
 
 // Clean folder
-const buildFolder = path.join(__dirname, '../build');
-shell.rm('-rf', buildFolder);
-shell.mkdir(buildFolder);
-shell.mkdir(`${buildFolder}/static`);
+const buildFolder = path.join(__dirname, '../app');
+const staticFolder = path.join(buildFolder, 'static');
+const nodeFolder = path.join(buildFolder, 'node');
+shell.rm('-rf', staticFolder);
+shell.rm('-rf', nodeFolder);
+shell.rm(path.join(buildFolder, 'index.html'));
+
+shell.mkdir(staticFolder);
+shell.mkdir(nodeFolder);
 
 shell.cp('-R', path.join(__dirname, '../src/node'), buildFolder);
 shell.rm(path.join(buildFolder, './node/main.js'));
@@ -37,13 +42,13 @@ let i;
 // shell.ShellString(lines.join('\n')).to(path.join(buildFolder, './node/main.js'));
 
 // The package.json for distribution
-shell.ShellString(`{
-  "name"    : "${pkgJson.name}",
-  "productName": "${pkgJson.productName}",
-  "version" : "${pkgJson.version}",
-  "main"    : "./node/main.dist.js"
-}
-`).to(path.join(buildFolder, 'package.json'));
+// shell.ShellString(`{
+//   "name"    : "${pkgJson.name}",
+//   "productName": "${pkgJson.productName}",
+//   "version" : "${pkgJson.version}",
+//   "main"    : "./node/main.dist.js"
+// }
+// `).to(path.join(buildFolder, 'package.json'));
 
 const timestamp = require('crypto')
   .createHash('md5')
