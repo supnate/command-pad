@@ -67,7 +67,7 @@ lines.splice(i, 0,
 const indexHtml = lines.join('\n');
 shell.ShellString(indexHtml).to(path.join(buildFolder, 'index.html'));
 
-console.log('Building, it may take tens of seconds...');
+console.log('Building, it may take a few seconds...');
 
 const start = new Date().getTime();
 webpack(config, (err, result) => {
