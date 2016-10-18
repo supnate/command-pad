@@ -1,7 +1,7 @@
 'use strict';
 const _ = require('lodash');
 const spawn = require('child_process').spawn;
-const { app, ipcMain } = require('electron');
+const { app, dialog, ipcMain } = require('electron');
 const Config = require('electron-config');
 const Convert = require('ansi-to-html');
 // const Sudoer = require('electron-sudo').default;
@@ -46,7 +46,7 @@ ipcMain.on('GET_INIT_DATA', (evt) => {
     appVersion: app.getVersion(),
     envPath: config.get('envPath'),
     outputRowsLimit: getOutputRowsLimit(),
-    cmds: cmds.map(c => Object.assign(_.pick(c, ['id', 'name', 'cmd', 'cwd', 'sudo', 'outputs', 'url']), { status: c.process ? 'running' : 'stopped' })),
+    cmds: cmds.map(c => Object.assign(_.pick(c, ['id', 'name', 'cmd', 'cwd', 'sudo', 'outputs', 'url', 'finishPrompt']), { status: c.process ? 'running' : 'stopped' })),
   });
 });
 
@@ -59,6 +59,7 @@ ipcMain.on('SAVE_CMD', (evt, data, cmdId) => {
     name: data.name,
     cmd: data.cmd,
     sudo: data.sudo,
+    finishPrompt: data.finishPrompt,
     cwd: data.cwd || null,
     url: data.url || null,
   });
@@ -218,7 +219,7 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
     return;
   }
 
-  const arr = cmd.cmd.split(' ').filter(item => !!item);
+  const arr = cmd.cmd.match(/'[^']*'|"[^"]*'|[^ ]+/g) || [];
   let target;
   if (cmd.sudo) {
     target = 'sudo';
@@ -284,6 +285,15 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
 
   term.on('exit', (code) => {
     delete cmd.process;
+    delete cmd._manualStop;
+    if (!cmd._manualStop && cmd.finishPrompt) {
+      dialog.showMessageBox({
+        type: code > 0 ? 'error' : 'info',
+        title: cmd.name,
+        buttons: [],
+        message: `Command ${code > 0 ? 'failed' : 'finished'}: ${cmd.name} .`,
+      });
+    }
     evt.sender.send('CMD_FINISHED', cmdId, code);
   });
 
@@ -295,6 +305,7 @@ ipcMain.on('STOP_CMD', (evt, cmdId) => {
   console.log('stopping cmd: ', cmdId);
   const cmd = cmdHash[cmdId];
   if (cmd.process) {
+    cmd._manualStop = true;
     cmd.process.destroy();
     // process.kill(-cmd.process.pid);
   }
@@ -306,5 +317,14 @@ ipcMain.on('SAVE_SETTINGS', (evt, data) => {
   config.set('envPath', data.envPath);
   config.set('outputRowsLimit', parseInt(data.outputRowsLimit, 10) || 100);
   evt.sender.send('SAVE_SETTINGS_SUCCESS');
+});
+
+
+/* ==================== Save Settings ============================== */
+ipcMain.on('CLEAR_OUTPUT', (evt, cmdId) => {
+  console.log('clear output');
+  const cmd = cmdHash[cmdId];
+  cmd.outputs.length = 0;
+  evt.sender.send('CLEAR_OUTPUT_SUCCESS');
 });
 

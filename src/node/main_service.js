@@ -288,10 +288,10 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
     delete cmd._manualStop;
     if (!cmd._manualStop && cmd.finishPrompt) {
       dialog.showMessageBox({
-        type: 'info',
+        type: code > 0 ? 'error' : 'info',
         title: cmd.name,
         buttons: [],
-        message: cmd.finishPrompt,
+        message: `Command ${code > 0 ? 'failed' : 'finished'}: ${cmd.name} .`,
       });
     }
     evt.sender.send('CMD_FINISHED', cmdId, code);

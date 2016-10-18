@@ -5,7 +5,7 @@
   "description": "GUI for managing command line tools.",
   "author": "Nate Wang <supnate@gmail.com>",
   "private": true,
-  "main": "./node/main.dist.js",
+  "main": "./node/main.js",
   "dependencies": {
     "ansi-to-html": "^0.4.2",
     "electron-config": "^0.2.1",

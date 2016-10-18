@@ -21,6 +21,9 @@ function collectDropTarget(connect) {
 }
 
 const cmdItemSource = {
+  canDrag(props) {
+    return !!props.editing;
+  },
   beginDrag(props) {
     return {
       id: props.cmd.id,
@@ -254,7 +257,7 @@ class CmdListItem extends PureComponent {
       editing
     } = this.props;
 
-    return connectDragSource(connectDropTarget(
+    const res = (
       <li className={`home-cmd-list-item ${cmd.status || 'stopped'}`} style={{ opacity: isDragging ? 0 : 1 }}>
         <Modal
           title="Sudo password:"
@@ -265,7 +268,7 @@ class CmdListItem extends PureComponent {
           okText="Ok"
           cancelText="Cancel"
         >
-          <p><Input value={this.state.password} ref={this.handlePasswordInputShow} type="password" onChange={this.handlePasswordChange} onKeyUp={this.handlePasswordKeyUp}/></p>
+          <p><Input value={this.state.password} ref={this.handlePasswordInputShow} type="password" onChange={this.handlePasswordChange} onKeyUp={this.handlePasswordKeyUp} /></p>
         </Modal>
 
         {this.renderActionIcon(cmd)}
@@ -289,7 +292,7 @@ class CmdListItem extends PureComponent {
           {
             !editing && cmd.outputs && cmd.outputs.length > 0 &&
             <Popover
-              trigger="click"
+              trigger="hover"
               content={this.getOutputPopover(cmd.id)}
               placement="left"
               getTooltipContainer={this.getTooltipContainer}
@@ -300,7 +303,9 @@ class CmdListItem extends PureComponent {
           }
         </div>
       </li>
-    ));
+    );
+
+    return this.props.editing ? connectDragSource(connectDropTarget(res)) : res;
   }
 }
 

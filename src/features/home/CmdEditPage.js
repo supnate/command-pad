@@ -96,11 +96,13 @@ export class CmdEditPage extends Component {
                 <Input size="default" />
               )}
             </FormItem>
-            <FormItem label={this.getFormItemLabel('Prompt when finish', 'Optional. If provided, there will be an alert message when the command is finished, i.e, prompt you when a build command is finished.')}>
+            
+            <FormItem>
               {getFieldDecorator('finishPrompt', {
-                initialValue: initialData.finishPrompt || '',
+                valuePropName: 'checked',
+                initialValue: !!initialData.finishPrompt,
               })(
-                <Input size="default" />
+                <Checkbox>{this.getFormItemLabel('Prompt when finished', 'Optional. Whether to show an alert message when the command finished/failed, i.e, prompt you when a build command is finished.')}</Checkbox>
               )}
             </FormItem>
             

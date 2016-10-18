@@ -23,7 +23,6 @@ shell.mkdir(staticFolder);
 shell.mkdir(nodeFolder);
 
 shell.cp('-R', path.join(__dirname, '../src/node'), buildFolder);
-shell.rm(path.join(buildFolder, './node/main.js'));
 shell.rm(path.join(buildFolder, './node/.eslintrc'));
 
 let lines;
