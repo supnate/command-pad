@@ -54,7 +54,7 @@ export class StatusPage extends Component {
 
   render() {
     const { home } = this.props;
-    const { runCmd, stopCmd, deleteCmd, reorderCmds } = this.props.actions;
+    const { runCmd, stopCmd, deleteCmd, reorderCmds, clearOutput } = this.props.actions;
     const { editing } = this.state;
     if (!home.appVersion) return this.renderLoading();
 
@@ -76,6 +76,7 @@ export class StatusPage extends Component {
             stopCmd={stopCmd}
             deleteCmd={deleteCmd}
             reorderCmds={reorderCmds}
+            clearOutput={clearOutput}
             editing={editing}
           />
           {(allCmds.length > 0 || editing )?

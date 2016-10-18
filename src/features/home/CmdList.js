@@ -13,6 +13,7 @@ class CmdList extends PureComponent {
     stopCmd: PropTypes.func.isRequired,
     deleteCmd: PropTypes.func.isRequired,
     reorderCmds: PropTypes.func.isRequired,
+    clearOutput: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -28,8 +29,6 @@ class CmdList extends PureComponent {
   state = {
     movingCmdIds: null,
   };
-
-
 
   moveCmdItem(sourceIndex, targetIndex) {
     let movingCmdIds = this.state.movingCmdIds;
@@ -60,6 +59,7 @@ class CmdList extends PureComponent {
       const groups = _.groupBy(cmds, 'id');
       cmds = this.state.movingCmdIds.map(id => groups[id][0]);
     }
+
     return (
       <ul className="home-cmd-list">
         {
@@ -72,6 +72,7 @@ class CmdList extends PureComponent {
               runCmd={this.props.runCmd}
               stopCmd={this.props.stopCmd}
               deleteCmd={this.props.deleteCmd}
+              clearOutput={this.props.clearOutput}
               moveCmdItem={this.moveCmdItem}
               dropCmdItem={this.dropCmdItem}
             />

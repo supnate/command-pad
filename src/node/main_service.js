@@ -219,7 +219,7 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
     return;
   }
 
-  const arr = cmd.cmd.split(' ').filter(item => !!item);
+  const arr = cmd.cmd.match(/'[^']*'|"[^"]*'|[^ ]+/g) || [];
   let target;
   if (cmd.sudo) {
     target = 'sudo';
@@ -317,5 +317,14 @@ ipcMain.on('SAVE_SETTINGS', (evt, data) => {
   config.set('envPath', data.envPath);
   config.set('outputRowsLimit', parseInt(data.outputRowsLimit, 10) || 100);
   evt.sender.send('SAVE_SETTINGS_SUCCESS');
+});
+
+
+/* ==================== Save Settings ============================== */
+ipcMain.on('CLEAR_OUTPUT', (evt, cmdId) => {
+  console.log('clear output');
+  const cmd = cmdHash[cmdId];
+  cmd.outputs.length = 0;
+  evt.sender.send('CLEAR_OUTPUT_SUCCESS');
 });
 

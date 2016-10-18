@@ -5,6 +5,7 @@ import _ from 'lodash';
 import { DragSource, DropTarget } from 'react-dnd';
 import { Icon, Input, Modal, Popover } from 'antd';
 import ALink from './ALink';
+import ConsoleOutput from './ConsoleOutput';
 
 function collectDragSource(connect, monitor) {
   return {
@@ -93,6 +94,7 @@ class CmdListItem extends PureComponent {
     runCmd: PropTypes.func.isRequired,
     stopCmd: PropTypes.func.isRequired,
     deleteCmd: PropTypes.func.isRequired,
+    clearOutput: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -109,6 +111,7 @@ class CmdListItem extends PureComponent {
     this.handlePasswordKeyUp = this.handlePasswordKeyUp.bind(this);
     this.handlePasswordInputShow = this.handlePasswordInputShow.bind(this);
     this.hidePasswordDialog = () => this.setState({ isPasswordDialogVisible: false });
+    this.clearOutput = this.clearOutput.bind(this);
   }
 
   state = {
@@ -123,13 +126,7 @@ class CmdListItem extends PureComponent {
   getOutputPopover() {
     const cmd = this.props.cmd;
     if (!cmd.outputs || !cmd.outputs.length) return null;
-    return (
-      <ul className="output-list">
-        {
-          cmd.outputs.map(line => <li key={line.id} dangerouslySetInnerHTML={{__html: line.text}}></li>)
-        }
-      </ul>
-    );
+    return <ConsoleOutput lines={cmd.outputs} onClear={this.clearOutput} />;
   }
 
   getPortString() {
@@ -138,6 +135,10 @@ class CmdListItem extends PureComponent {
       return ` ${RegExp.$1}`;
     }
     return '';
+  }
+
+  clearOutput() {
+    this.props.clearOutput(this.props.cmd.id);
   }
 
   handleRunCmd() {
@@ -288,7 +289,7 @@ class CmdListItem extends PureComponent {
           {
             !editing && cmd.outputs && cmd.outputs.length > 0 &&
             <Popover
-              trigger="hover"
+              trigger="click"
               content={this.getOutputPopover(cmd.id)}
               placement="left"
               getTooltipContainer={this.getTooltipContainer}

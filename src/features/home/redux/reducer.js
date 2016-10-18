@@ -7,6 +7,7 @@ import { reducer as saveCmd } from './saveCmd';
 import { reducer as deleteCmd } from './deleteCmd';
 import { reducer as reorderCmds } from './reorderCmds';
 import { reducer as saveSettings } from './saveSettings';
+import { reducer as clearOutput } from './clearOutput';
 
 const reducers = [
   getInitData,
@@ -16,6 +17,7 @@ const reducers = [
   deleteCmd,
   reorderCmds,
   saveSettings,
+  clearOutput,
 ];
 
 export default function reducer(state = initialState, action) {

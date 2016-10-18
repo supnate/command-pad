@@ -11,6 +11,8 @@ const initialState = {
   runCmdError: null,
   saveSettingsPending: false,
   saveSettingsError: null,
+  clearOutputPending: false,
+  clearOutputError: null,
 };
 
 export default initialState;
