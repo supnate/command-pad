@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { hashHistory, Link } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Checkbox, Col, Form, Icon, Input, message, Popover, Row, Tooltip } from 'antd';
+import { Button, Checkbox, Col, Form, Icon, Input, InputNumber, message, Popover, Row, Tooltip } from 'antd';
 import * as actions from './redux/actions';
 
 const FormItem = Form.Item;
@@ -31,7 +31,10 @@ export class SettingsPage extends Component {
 
   handleSubmit(evt) {
     evt.preventDefault();
-    
+    this.props.actions.saveSettings(this.props.form.getFieldsValue()).then(() => {
+      message.success('Setting success.');
+      hashHistory.push('/');
+    });
   }
 
   render() {
@@ -44,6 +47,13 @@ export class SettingsPage extends Component {
         </div>
         <div className="page-content">
           <Form vertical required style={{ margin: 15 }} onSubmit={this.handleSubmit}>
+            <FormItem label={this.getFormItemLabel('Max output rows', 'The max number of output rows.')}>
+              {getFieldDecorator('outputRowsLimit', {
+                initialValue: this.props.home.outputRowsLimit || 100,
+              })(
+                <InputNumber size="default" style={{ width: '100%' }} />
+              )}
+            </FormItem>
             <FormItem label={this.getFormItemLabel('Environment path', 'The environment path to find the command. You may need to set this when using nvm.')}>
               {getFieldDecorator('envPath', {
                 initialValue: this.props.home.envPath || '',

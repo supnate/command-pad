@@ -13,7 +13,7 @@ export default class Welcome extends PureComponent {
           Command Pad is a central place for managing all of your command line apps.
         </p>
         <p>
-          It's motivated by the need to run multiple dev servers while developing <a href="https://facebook.github.io/react/index.html">React</a> applications. Such as: Webpack dev-server, Storybook dev-server, Gitbook dev-server, API proxy server etc.
+          It's motivated by the need for running multiple dev servers while developing <a href="https://facebook.github.io/react/index.html">React</a> applications. Such as: Webpack dev-server, Storybook dev-server, Gitbook dev-server, API proxy server etc.
         </p>
         <p>
           It's also suitable for other command line scenarios, such as running tests, launch Java apps, etc.

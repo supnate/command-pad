@@ -269,8 +269,17 @@ class CmdListItem extends PureComponent {
 
         {this.renderActionIcon(cmd)}
 
-        {cmd.url && <ALink className="url-link" url={cmd.url}><Icon type="link" />{this.getPortString(cmd)}</ALink>}
-        <Link to={`/cmd/edit/${cmd.id}`} title={`${cmd.sudo ? 'sudo ' : ''}${cmd.cmd}`} className="name">{cmd.name || cmd.cmd || 'No name.'}{cmd.sudo && <span className="sudo-icon">S</span>}</Link>
+        <div className="display-name">
+          {cmd.url && <ALink className="url-link" url={cmd.url}><Icon type="link" />{this.getPortString(cmd)}</ALink>}
+          <Link
+            to={`/cmd/edit/${cmd.id}`} title={`${cmd.sudo ? 'sudo ' : ''}${cmd.cmd}`}
+            className="name"
+          >
+            {cmd.sudo && <span className="sudo-icon">S</span>}
+            {cmd.name || cmd.cmd || 'No name.'}
+          </Link>
+        </div>
+        
         {!editing && this.renderOutput(cmd)}
 
         <div className="buttons">

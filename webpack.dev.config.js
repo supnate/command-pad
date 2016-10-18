@@ -1,9 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
-const Dashboard = require('webpack-dashboard');
-const DashboardPlugin = require('webpack-dashboard/plugin');
+// const Dashboard = require('webpack-dashboard');
+// const DashboardPlugin = require('webpack-dashboard/plugin');
 
-const dashboard = new Dashboard();
+// const dashboard = new Dashboard();
 
 module.exports = {
   devtool: 'eval',
@@ -15,7 +15,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'build/static'),
     filename: '[name].bundle.js',
-    publicPath: '/static'
+    publicPath: '/static/'
   },
   devServer: {
     contentBase: path.join(__dirname, 'src'),
@@ -30,7 +30,7 @@ module.exports = {
         NODE_ENV: JSON.stringify('dev'),
       }
     }),
-    new DashboardPlugin(dashboard.setData)
+    // new DashboardPlugin(dashboard.setData)
   ],
   module: {
     loaders: [
@@ -39,7 +39,7 @@ module.exports = {
         exclude: /node_modules|build/,
         loader: 'react-hot-loader!babel-loader?cacheDirectory=true'
       }, {
-        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        test: /\.(ttf|eot|svg|woff)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'file-loader'
       }, {
         test: /\.less$/,

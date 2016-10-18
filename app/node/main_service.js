@@ -30,16 +30,22 @@ cmds.forEach(cmd => cmdHash[cmd.id] = cmd); // eslint-disable-line
 process.on('exit', () => {
   for (const cmd of cmds) {
     if (cmd.process) {
-      // cmd.process.destroy();
-      process.kill(-cmd.process.pid);
+      cmd.process.destroy();
+      // process.kill(-cmd.process.pid);
     }
   }
 });
 
+
+function getOutputRowsLimit() {
+  return config.get('outputRowsLimit') || 100;
+}
 /* ==================== Get Init Data ============================== */
 ipcMain.on('GET_INIT_DATA', (evt) => {
   evt.sender.send('SET_INIT_DATA', {
     appVersion: app.getVersion(),
+    envPath: config.get('envPath'),
+    outputRowsLimit: getOutputRowsLimit(),
     cmds: cmds.map(c => Object.assign(_.pick(c, ['id', 'name', 'cmd', 'cwd', 'sudo', 'outputs', 'url']), { status: c.process ? 'running' : 'stopped' })),
   });
 });
@@ -118,89 +124,89 @@ ipcMain.on('REORDER_CMDS', (evt, cmdIds) => {
 
 /* ==================== Run Command ============================== */
 
-function sudoRunCmd(evt, cmdId) {
+// function sudoRunCmd(evt, cmdId) {
   
-  const cmd = cmdHash[cmdId];
-  const arr = cmd.cmd.split(' ').filter(item => !!item);
-  const target = arr.shift();
+//   const cmd = cmdHash[cmdId];
+//   const arr = cmd.cmd.split(' ').filter(item => !!item);
+//   const target = arr.shift();
 
-  let options = {name: cmd.name};
-  const sudoer = new Sudoer(options);
+//   let options = {name: cmd.name};
+//   const sudoer = new Sudoer(options);
 
-  let lineId = 0;
-  cmd.outputs.length = 0;
-  function onData(chunk) {
-    const out = chunk.toString('utf8');
-    for (const line of out.split('\n')) {
-      if (cmd.outputs.length >= 10) cmd.outputs.unshift();
-      cmd.outputs.push({
-        id: `${cmdId}_${lineId++}`, //eslint-disable-line
-        text: line,
-      });
-    }
-    evt.sender.send('CMD_OUTPUT', cmdId, [].concat(cmd.outputs));
-  }
-  sudoer.spawn(target, arr).then((cp) => {
-    cp.stdout.on('data', onData);
-    cp.stderr.on('data', onData);
-    cp.on('exit', (code) => {
-      delete cmd.process;
-      evt.sender.send('CMD_FINISHED', cmdId, code);
-    });
-    cmd.process = cp;
-  }).catch((err) => {
-    evt.sender.send('CMD_FINISHED', cmdId, 1, err);
-  });
-}
+//   let lineId = 0;
+//   cmd.outputs.length = 0;
+//   function onData(chunk) {
+//     const out = chunk.toString('utf8');
+//     for (const line of out.split('\n')) {
+//       if (cmd.outputs.length >= 10) cmd.outputs.unshift();
+//       cmd.outputs.push({
+//         id: `${cmdId}_${lineId++}`, //eslint-disable-line
+//         text: line,
+//       });
+//     }
+//     evt.sender.send('CMD_OUTPUT', cmdId, [].concat(cmd.outputs));
+//   }
+//   sudoer.spawn(target, arr).then((cp) => {
+//     cp.stdout.on('data', onData);
+//     cp.stderr.on('data', onData);
+//     cp.on('exit', (code) => {
+//       delete cmd.process;
+//       evt.sender.send('CMD_FINISHED', cmdId, code);
+//     });
+//     cmd.process = cp;
+//   }).catch((err) => {
+//     evt.sender.send('CMD_FINISHED', cmdId, 1, err);
+//   });
+// }
 
-ipcMain.on('RUN_CMD2', (evt, cmdId) => {
-  const cmd = cmdHash[cmdId];
-  evt.sender.send('RUN_CMD_SUCCESS', cmdId);
-  if (cmd.process) {
-    // prevent from running multiple times.
-    return;
-  }
-  if (cmd.sudo) {
-    sudoRunCmd(evt, cmdId);
-    return;
-  }
-  const arr = cmd.cmd.split(' ').filter(item => !!item);
-  const target = arr.shift();
-  const child = spawn(target, arr, {
-    cwd: cmd.cwd,
-    stdio: 'pipe',
-    detached: true,
-  });
+// ipcMain.on('RUN_CMD2', (evt, cmdId) => {
+//   const cmd = cmdHash[cmdId];
+//   evt.sender.send('RUN_CMD_SUCCESS', cmdId);
+//   if (cmd.process) {
+//     // prevent from running multiple times.
+//     return;
+//   }
+//   if (cmd.sudo) {
+//     sudoRunCmd(evt, cmdId);
+//     return;
+//   }
+//   const arr = cmd.cmd.split(' ').filter(item => !!item);
+//   const target = arr.shift();
+//   const child = spawn(target, arr, {
+//     cwd: cmd.cwd,
+//     stdio: 'pipe',
+//     detached: true,
+//   });
 
-  child.stdout.pipe(process.stdout);
-  cmd.process = child;
+//   child.stdout.pipe(process.stdout);
+//   cmd.process = child;
 
-  let lineId = 0;
-  cmd.outputs.length = 0;
-  function onData(chunk) {
-    const out = chunk.toString('utf8');
-    for (const line of out.split('\n')) {
-      if (cmd.outputs.length >= 10) cmd.outputs.unshift();
-      cmd.outputs.push({
-        id: `${cmdId}_${lineId++}`, //eslint-disable-line
-        text: line,
-      });
-    }
-    evt.sender.send('CMD_OUTPUT', cmdId, [].concat(cmd.outputs));
-  }
-  child.stdout.on('data', onData);
-  child.stderr.on('data', onData);
+//   let lineId = 0;
+//   cmd.outputs.length = 0;
+//   function onData(chunk) {
+//     const out = chunk.toString('utf8');
+//     for (const line of out.split('\n')) {
+//       if (cmd.outputs.length >= 10) cmd.outputs.unshift();
+//       cmd.outputs.push({
+//         id: `${cmdId}_${lineId++}`, //eslint-disable-line
+//         text: line,
+//       });
+//     }
+//     evt.sender.send('CMD_OUTPUT', cmdId, [].concat(cmd.outputs));
+//   }
+//   child.stdout.on('data', onData);
+//   child.stderr.on('data', onData);
 
-  child.on('exit', (code) => {
-    delete cmd.process;
-    evt.sender.send('CMD_FINISHED', cmdId, code);
-  });
+//   child.on('exit', (code) => {
+//     delete cmd.process;
+//     evt.sender.send('CMD_FINISHED', cmdId, code);
+//   });
 
-  child.on('error', (error) => {
-    delete cmd.process;
-    evt.sender.send('CMD_FINISHED', cmdId, 99, error);
-  });
-});
+//   child.on('error', (error) => {
+//     delete cmd.process;
+//     evt.sender.send('CMD_FINISHED', cmdId, 99, error);
+//   });
+// });
 
 /* ==================== Run Command with pty.js ============================== */
 ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
@@ -220,19 +226,30 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
     target = arr.shift();
   }
 
+  let envPath = config.get('envPath');
+  if (envPath) {
+    if (process.platform === 'win32') {
+      envPath = ';' + envPath;
+    } else {
+      envPath = ':' + envPath;
+    }
+  } else {
+    envPath = '';
+  }
+
   const term = pty.spawn(target, arr, {
     name: 'xterm-color',
     cols: 80,
     rows: 30,
     cwd: cmd.cwd || process.env.HOME,
     detached: true,
-    env: process.env
+    env: Object.assign({}, process.env, { PATH: `${process.env.PATH}${envPath}` }),
   });
 
   let lineId = 0;
   cmd.outputs.length = 0;
   term.on('data', (chunk) => {
-    const out = chunk.toString('utf8');
+    let out = chunk.toString('utf8');
 
     if (/sorry.*try.*again.*/i.test(out)) {
       cmd.outputs.push({
@@ -248,24 +265,29 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
       term.write(`${password}\r`);
       return;
     }
-    for (const line of out.split('\n')) {
-      if (cmd.outputs.length >= 10) cmd.outputs.unshift();
+
+    out = out.replace(/[\n\r]$/, '');
+    const lines = out.split('\n');
+
+    const rowsLimit = getOutputRowsLimit();
+    for (const line of lines) {
       cmd.outputs.push({
         id: `${cmdId}_${lineId++}`, //eslint-disable-line
         text: convert.toHtml(line.replace(/\s/g, '&nbsp;')),
       });
+      if (cmd.outputs.length >= rowsLimit ) {
+        cmd.outputs.splice(0, cmd.outputs.length - rowsLimit);
+      }
     }
     evt.sender.send('CMD_OUTPUT', cmdId, [].concat(cmd.outputs));
   });
 
   term.on('exit', (code) => {
-    console.log('onexit',code);
     delete cmd.process;
     evt.sender.send('CMD_FINISHED', cmdId, code);
   });
 
   cmd.process = term;
-
 });
 
 /* ==================== Stop Command ============================== */
@@ -276,5 +298,13 @@ ipcMain.on('STOP_CMD', (evt, cmdId) => {
     cmd.process.destroy();
     // process.kill(-cmd.process.pid);
   }
+});
+
+/* ==================== Save Settings ============================== */
+ipcMain.on('SAVE_SETTINGS', (evt, data) => {
+  console.log('save settings');
+  config.set('envPath', data.envPath);
+  config.set('outputRowsLimit', parseInt(data.outputRowsLimit, 10) || 100);
+  evt.sender.send('SAVE_SETTINGS_SUCCESS');
 });
 

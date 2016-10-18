@@ -45,6 +45,8 @@ export function reducer(state, action) {
       return {
         ...state,
         appVersion: action.data.appVersion,
+        envPath: action.data.envPath,
+        outputRowsLimit: action.data.outputRowsLimit,
         cmdIds: action.data.cmds.map(c => c.id),
         cmdById: action.data.cmds.map(c => ({ ...c, status: c.status || 'stopped' })).reduce((p, c) => { p[c.id] = c; return p; }, {}), // eslint-disable-line
         getInitDataPending: false,

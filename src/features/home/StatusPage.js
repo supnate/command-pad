@@ -28,12 +28,12 @@ export class StatusPage extends Component {
   };
 
   componentDidMount() {
-    if (!this.props.home.appVersion) {
-      this.props.actions.getInitData()
-        .then(() => this.setState({
-          cmds: this.props.home.cmdIds.map(id => this.props.home.cmdById[id]).slice(),
-        }));
-    }
+    // if (!this.props.home.appVersion) {
+    //   this.props.actions.getInitData()
+    //     .then(() => this.setState({
+    //       cmds: this.props.home.cmdIds.map(id => this.props.home.cmdById[id]).slice(),
+    //     }));
+    // }
   }
 
   handleBeginEdit() {

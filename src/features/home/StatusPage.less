@@ -13,174 +13,13 @@
       margin-left: 10px;
     }
   }
-  ul, li {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
 
   ul.home-cmd-list {
     width: 100%;
   }
 
   ul.home-cmd-list li {
-    position: relative;
-    padding: 10px 40px 10px 40px;
-    border-bottom: 1px solid #eee;
-    font-size: 14px;
-    &:hover {
-      background-color: #fafafa;
-    }
-    .action-icon {
-      position: absolute;
-      left: 10px;
-      top: 10px;
-      font-size: 20px;
-      color: gray;
-      cursor: pointer;
-
-      &.anticon-stop-circle {
-        width: 20px;
-        height: 20px;
-        border-radius: 10px;
-        background-color: #4CAF50;
-        &:after {
-          position: absolute;
-          left: 6px;
-          top: 6px;
-          display: inline-block;
-          content: ' ';
-          width: 8px;
-          height: 8px;
-          border-radius: 1px;
-          background-color: #fff;
-        }
-      }
-    }
-
-    .url-link {
-      display: inline-block;
-      margin-right: 5px;
-      font-size: 10px;
-      border-radius: 2px;
-      padding: 0 2px;
-      background-color: #57c5f7;
-      color: #fff;
-      transform: translateY(-2px);
-
-      &:hover {
-        background-color: darken(#57c5f7, 10%)
-      }
-
-      .anticon {
-        color: #fff!important;
-      }
-    }
-    .name {
-      display: inline-block;
-      max-width: 100%;
-      line-height: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: #555;
-
-      &:hover {
-        color: #57c5f7;
-      }
-    }
-
-    .output {
-      display: block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 12px;
-      color: #aaa;
-
-      &.error {
-        color: red;
-      }
-    }
-
-    .buttons {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      text-align: right;
-
-      .anticon {
-        margin-left: 5px;
-        cursor: pointer;
-      }
-
-      .anticon-delete {
-        color: lighten(red, 20%);
-        &:hover {
-          color: lighten(red, 10%);
-        }
-      }
-
-      .icon-move {
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        margin-left: 8px;
-        cursor: move;
-
-        &:before {
-          content: ' ';
-          overflow: hidden;
-          display: block;
-          margin: 3px 2px 0;
-          height: 6px;
-          border-top: 2px solid #aaa;
-          border-bottom: 2px solid #aaa;
-        }
-
-        &:after {
-          content: ' ';
-          overflow: hidden;
-          display: block;
-          margin: 0 2px;
-          height: 4px;
-          border-bottom: 2px solid #aaa;
-        }
-      }
-
-      .anticon-eye-o {
-        display: inline-block;
-        font-size: 20px;
-        color: #57c5f7!important;
-      }
-    }
-
-    // &:hover .buttons {
-    //   .anticon-delete, .anticon-edit {
-    //     display: inline-block;
-    //   }
-    // }
-
-    &.stopped {
-      .url-link {
-        background-color: #ccc;
-      }
-      .action-icon {
-        color: #aaa;
-      }
-    }
-
-    // &.error {
-    //   .anticon {
-    //     color: #FF5252;
-    //   }
-    // }
-
-    &.running {
-      .action-icon {
-        color: #4CAF50;
-      }
-    }
+    
   }
 
   .home-welcome {
@@ -194,7 +33,7 @@
     width: 80%;
   }
   .ant-popover-inner {
-    max-height: 200px;
+    max-height: 300px;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.9);
     .output-list {

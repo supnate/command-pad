@@ -4,7 +4,6 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { hashHistory, Router } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
-import 'antd/dist/antd.css';
 
 import configStore from './common/configStore';
 import routeConfig from './common/routeConfig';
@@ -17,24 +16,28 @@ document.body.appendChild(root);
 
 bridge.ipcRenderer.on('CMD_FINISHED', (evt, cmdId, code, error) => {
   console.log('cmd finished: ', cmdId, code);
-  store.dispatch({
-    type: 'CMD_FINISHED',
-    data: {
-      cmdId,
-      code,
-      error,
-    },
-  });
+  if (store.getState().home.appVersion) {
+    store.dispatch({
+      type: 'CMD_FINISHED',
+      data: {
+        cmdId,
+        code,
+        error,
+      },
+    });
+  }
 });
 
 bridge.ipcRenderer.on('CMD_OUTPUT', (evt, cmdId, outputs) => {
-  store.dispatch({
-    type: 'CMD_OUTPUT',
-    data: {
-      cmdId,
-      outputs,
-    },
-  });
+  if (store.getState().home.appVersion) {
+    store.dispatch({
+      type: 'CMD_OUTPUT',
+      data: {
+        cmdId,
+        outputs,
+      },
+    });
+  }
 });
 
 // bridge.ipcRenderer.on('CMDS_UPDATED', (evt, cmds) => {
@@ -50,3 +53,16 @@ render(
   </Provider>,
   root
 );
+
+// // import { Button, Icon } from 'antd';
+// // import routeConfig from './common/routeConfig';
+// import TestComponent from './TestComponent';
+// // import { Button, Col, Form, Icon, Input, Modal, Popover, Row } from 'antd';
+// // import 'antd/dist/antd.css';
+// const root = document.createElement('div');
+// document.body.appendChild(root);
+
+// render(
+//   <div>
+//     <TestComponent />
+//   </div>, root);

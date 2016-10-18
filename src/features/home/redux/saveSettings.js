@@ -5,29 +5,21 @@ import {
   SAVE_SETTINGS_DISMISS_ERROR,
 } from './constants';
 
-export function saveSettings(args) {
+export function saveSettings(data) {
   return (dispatch) => {
     dispatch({
       type: SAVE_SETTINGS_BEGIN,
     });
     const promise = new Promise((resolve, reject) => {
-      window.setTimeout(() => {
-        if (!args.error) { // NOTE: args.error is only used for demo purpose
-          dispatch({
-            type: SAVE_SETTINGS_SUCCESS,
-            data: {},
-          });
-          resolve();
-        } else {
-          dispatch({
-            type: SAVE_SETTINGS_FAILURE,
-            data: {
-              error: 'some error',
-            },
-          });
-          reject();
-        }
-      }, 50);
+      bridge.ipcRenderer.once('SAVE_SETTINGS_SUCCESS', (evt) => {
+        dispatch({
+          type: SAVE_SETTINGS_SUCCESS,
+          data,
+        });
+        resolve();
+      });
+
+      bridge.ipcRenderer.send('SAVE_SETTINGS', data);
     });
 
     return promise;
@@ -52,6 +44,8 @@ export function reducer(state, action) {
     case SAVE_SETTINGS_SUCCESS:
       return {
         ...state,
+        envPath: action.data.envPath,
+        outputRowsLimit: parseInt(action.data.outputRowsLimit, 10),
         saveSettingsPending: false,
         saveSettingsError: null,
       };

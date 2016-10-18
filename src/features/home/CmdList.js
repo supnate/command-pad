@@ -29,6 +29,8 @@ class CmdList extends PureComponent {
     movingCmdIds: null,
   };
 
+
+
   moveCmdItem(sourceIndex, targetIndex) {
     let movingCmdIds = this.state.movingCmdIds;
     if (!movingCmdIds) {
@@ -43,6 +45,9 @@ class CmdList extends PureComponent {
   }
 
   dropCmdItem() {
+    if (!this.state.movingCmdIds) {
+      return;
+    }
     this.props.reorderCmds(this.state.movingCmdIds);
     this.setState({
       movingCmdIds: null,
