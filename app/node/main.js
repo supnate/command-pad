@@ -1,8 +1,11 @@
 'use strict';
 const path = require('path');
-const { app, BrowserWindow, Menu, Tray } = require('electron');
+const { app, dialog, BrowserWindow, Menu, Tray } = require('electron');
 
 require('./main_service');
+const checkUpdate = require('./check_update');
+
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -79,6 +82,8 @@ function createWindow () {
     ];
     Menu.setApplicationMenu(Menu.buildFromTemplate(template));
   }
+
+  checkUpdate();
 }
 
 app.on('before-quit', () => {

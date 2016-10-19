@@ -1,7 +1,8 @@
 'use strict';
+const path = require('path');
 const _ = require('lodash');
 const spawn = require('child_process').spawn;
-const { app, dialog, ipcMain } = require('electron');
+const { app, dialog, ipcMain, nativeImage } = require('electron');
 const Config = require('electron-config');
 const Convert = require('ansi-to-html');
 // const Sudoer = require('electron-sudo').default;
@@ -10,6 +11,9 @@ const pty = require('pty.js');
 
 const convert = new Convert();
 const config = new Config();
+
+const iconSuccess = nativeImage.createFromPath(path.join(__dirname, '../images/iconSuccess.png'));
+const iconError = nativeImage.createFromPath(path.join(__dirname, '../images/iconError.png'));
 
 function guid() {
   return 'xyxyxyxy'.replace(/[xy]/g, function(c) {
@@ -289,6 +293,7 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
     if (!cmd._manualStop && cmd.finishPrompt) {
       dialog.showMessageBox({
         type: code > 0 ? 'error' : 'info',
+        icon: code > 0 ? iconError : iconSuccess,
         title: cmd.name,
         buttons: [],
         message: `Command ${code > 0 ? 'failed' : 'finished'}: ${cmd.name} .`,
