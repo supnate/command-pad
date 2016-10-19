@@ -1,1 +1,1 @@
-# command-pad
+# command-pad-pages
