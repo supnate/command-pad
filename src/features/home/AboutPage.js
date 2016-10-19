@@ -17,7 +17,6 @@ export class AboutPage extends Component {
       <div className="rekit-page home-about-page">
         <div className="header">
           <Icon type="close" onClick={() => hashHistory.push('/')} style={{ float: 'right' }} />
-          <h1>About</h1>
         </div>
         <div className="page-content">
           <div className="title-wrapper">

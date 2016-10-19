@@ -212,10 +212,21 @@ class CmdListItem extends PureComponent {
         </span>
       );
     }
-    const outputs = cmd.outputs ? cmd.outputs.filter(c => !!c.text) : [];
-    if (!outputs.length) return null;
+    const outputs = cmd.outputs ? cmd.outputs.filter(
+      c => !!c.text
+      && c.text !== '&nbsp;'
+      && c.text !== '?25l'
+      && c.text !== '?25h'
+    ) : [];
+    let msg;
+    if (!outputs.length) {
+      if (cmd.status === 'running') msg = 'Running...';
+      else return null;
+    } else {
+      msg = _.last(outputs).text;
+    }
     return (
-      <span className="output" dangerouslySetInnerHTML={{__html: _.last(outputs).text}}>
+      <span className="output" dangerouslySetInnerHTML={{__html: msg}}>
       </span>
     );
   }
@@ -238,7 +249,7 @@ class CmdListItem extends PureComponent {
         return (
           <Icon
             title="Start"
-            type="play-circle"
+            type="play-circle-o"
             className="action-icon"
             onClick={this.handleRunCmd}
           />

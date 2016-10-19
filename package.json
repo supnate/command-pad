@@ -7,7 +7,7 @@
   "scripts": {
     "postinstall": "install-app-deps",
     "electron": "cross-env NODE_ENV=development electron ./",
-    "electron:dist": "electron ./app",
+    "electron:dist": "cross-env NODE_ENV=development electron ./app",
     "pkg:osx": "electron-packager ./build",
     "start": "node ./tools/server.js",
     "build": "node ./tools/build.js",
@@ -29,9 +29,14 @@
     "dist": "npm run build & build"
   },
   "build": {
+    "compression": "store",
     "appId": "com.webows.commandpad",
+    "dmg": {
+      "icon": "build/icon.icns"
+    },
     "mac": {
-      "category": "Tools"
+      "category": "Tools",
+      "target": "dmg"
     },
     "win": {
       "iconUrl": "https://github.com/supnate/command-pad"

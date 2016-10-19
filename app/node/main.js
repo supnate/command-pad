@@ -1,6 +1,6 @@
 'use strict';
-
-const { app, BrowserWindow, Menu } = require('electron');
+const path = require('path');
+const { app, BrowserWindow, Menu, Tray } = require('electron');
 
 require('./main_service');
 
@@ -12,6 +12,8 @@ let willQuitApp = false;
 console.log(process.env.NODE_ENV);
 
 const isDev = process.env.NODE_ENV === 'development';
+
+
 
 function createWindow () {
   // Create the browser window.
@@ -25,7 +27,7 @@ function createWindow () {
   if (isDev) {
     win.loadURL('http://localhost:6076/');
   } else {
-    win.loadURL(`file://${__dirname}/../index.html`);
+    win.loadURL(`file://${path.join(__dirname, '../index.html')}`);
   }
 
   // Open the DevTools.
@@ -49,6 +51,12 @@ function createWindow () {
       win.hide();
     }
   });
+  const tray = new Tray(path.join(__dirname, '../images/iconTemplate.png'));
+  tray.on('click', () => {
+    win.show();
+  });
+  // tray.setToolTip('Command Pad')
+  // appIcon.setPressedImage(`${__dirname}/../../build/trayicon-highlight.png`);  
 
   if (!isDev) {
     var template = [{
@@ -69,7 +77,6 @@ function createWindow () {
         { label: 'Select All', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:' }
       ]}
     ];
-
     Menu.setApplicationMenu(Menu.buildFromTemplate(template));
   }
 }

@@ -23,6 +23,8 @@ shell.mkdir(staticFolder);
 shell.mkdir(nodeFolder);
 
 shell.cp('-R', path.join(__dirname, '../src/node'), buildFolder);
+shell.cp('-R', path.join(__dirname, '../src/images'), buildFolder);
+// shell.cp(path.join(__dirname, '../build'), staticFolder);
 shell.rm(path.join(buildFolder, './node/.eslintrc'));
 
 let lines;

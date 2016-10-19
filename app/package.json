@@ -1,8 +1,10 @@
 {
   "name": "CommandPad",
+  "productName": "Command Pad",
   "version": "0.1.0",
   "license": "MIT",
-  "description": "GUI for managing command line tools.",
+  "description": "GUI for managing command line programs.",
+  "homepage": "https://github.com/supnate/command-pad",
   "author": "Nate Wang <supnate@gmail.com>",
   "private": true,
   "main": "./node/main.js",

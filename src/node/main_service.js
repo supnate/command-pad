@@ -274,7 +274,7 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
     for (const line of lines) {
       cmd.outputs.push({
         id: `${cmdId}_${lineId++}`, //eslint-disable-line
-        text: convert.toHtml(line.replace(/\s/g, '&nbsp;')),
+        text: convert.toHtml(line.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/\s/g, '&nbsp;')),
       });
       if (cmd.outputs.length >= rowsLimit ) {
         cmd.outputs.splice(0, cmd.outputs.length - rowsLimit);
@@ -306,7 +306,10 @@ ipcMain.on('STOP_CMD', (evt, cmdId) => {
   const cmd = cmdHash[cmdId];
   if (cmd.process) {
     cmd._manualStop = true;
-    cmd.process.destroy();
+    try {
+      cmd.process.kill('SIGINT');
+      cmd.process.destroy();
+    } catch(e) {}
     // process.kill(-cmd.process.pid);
   }
 });
