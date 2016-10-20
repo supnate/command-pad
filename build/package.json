@@ -1,6 +1,0 @@
-{
-  "name"    : "command-pad",
-  "productName": "Command Pad",
-  "version" : "0.0.1",
-  "main"    : "./node/main.dist.js"
-}

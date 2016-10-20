@@ -9,7 +9,7 @@ const checkUpdate = require('./check_update');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win;
+let win = null;
 let willQuitApp = false;
 
 console.log(process.env.NODE_ENV);
