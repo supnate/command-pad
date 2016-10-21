@@ -23,6 +23,7 @@ It helps to manage command line programs in one central place with intuitive UI.
 
 # Use cases
 Besides running dev servers, Command Pad is also useful for:
+
 1. Running building/testing scripts. You can be prompted when the script is finished.
 2. Launch command line GUI apps like JMeter.
 3. ...
