@@ -16,7 +16,7 @@ export default class Welcome extends PureComponent {
           It's motivated by the need for running multiple dev servers for modern web development. Such as: Webpack dev-server, Storybook dev-server, Gitbook dev-server, API proxy server etc.
         </p>
         <p>
-          It's also suitable for other scenarios, such as running tests, launch Java apps, etc.
+          It also could be used for other scenarios, such as running tests, launching Java apps, etc.
         </p>
         <p>
           Command Pad is an open source app. Any question or advice please visit the <a href="https://github.com/supnate/command-pad">project page</a> on GitHub.

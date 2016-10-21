@@ -236,10 +236,10 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
     if (process.platform === 'win32') {
       envPath = ';' + envPath;
     } else {
-      envPath = ':' + envPath;
+      envPath = ':/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:/usr/local/share/node/bin:' + envPath;
     }
   } else {
-    envPath = '';
+    envPath = ':/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:/usr/local/share/node/bin';
   }
 
   const term = pty.spawn(target, arr, {
