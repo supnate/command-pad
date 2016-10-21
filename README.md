@@ -6,7 +6,7 @@ It helps to start and stop a command line program easily and you can also monito
 # Downloads
 Version 0.1.0 Released at 2016-10-22:
 * MacOS: [Command Pad-0.1.0.dmg](https://supnate.github.io/command-pad-dist/downloads/Command Pad-0.1.0.dmg)
-* Windows: incoming...
+* Windows: is coming...
 
 # Motivation
 For the modern web development, it usually needs several terminals opened for just running various dev servers, for example below is my terminal typically looks like:
