@@ -40,12 +40,6 @@ bridge.ipcRenderer.on('CMD_OUTPUT', (evt, cmdId, outputs) => {
   }
 });
 
-// bridge.ipcRenderer.on('CMDS_UPDATED', (evt, cmds) => {
-//   store.dispatch({
-//     type: 'CMDS_UPDATED',
-//     data: { cmds },
-//   });
-// });
 
 render(
   <Provider store={store}>
@@ -54,15 +48,4 @@ render(
   root
 );
 
-// // import { Button, Icon } from 'antd';
-// // import routeConfig from './common/routeConfig';
-// import TestComponent from './TestComponent';
-// // import { Button, Col, Form, Icon, Input, Modal, Popover, Row } from 'antd';
-// // import 'antd/dist/antd.css';
-// const root = document.createElement('div');
-// document.body.appendChild(root);
-
-// render(
-//   <div>
-//     <TestComponent />
-//   </div>, root);
+// import './test.js';

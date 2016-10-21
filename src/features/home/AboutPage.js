@@ -24,7 +24,7 @@ export class AboutPage extends Component {
             <h2>Command Pad</h2>
             <div>Version {this.props.home.appVersion}</div>
           </div>
-          <p>Command Pad is a central place for managing all of your command line apps.</p>
+          <p>Command Pad is a central place for managing your command line programs.</p>
           <p>Any questions or advice? Please visit:</p>
           <ALink url="https://github.com/supnate/command-pad">https://github.com/supnate/command-pad</ALink>
           <h3>Powered by</h3>

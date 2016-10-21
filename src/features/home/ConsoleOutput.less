@@ -15,12 +15,22 @@
     position: absolute;
     right: 10px;
     top: 10px;
+    padding: 0;
     color: #fff;
     cursor: pointer;
     font-size: 16px;
     opacity: 0.6;
+    border: 0px solid #fff;
+    width: 16px;
+    height: 16px;
+    background: url('../../images/icon_clear.png') 0 0 no-repeat;
+    background-size: 16px 16px;
+
+    &:before {
+      content: ' ';
+    }
     &:hover {
-      opacity: 1;
+      opacity: 0.9;
     }
 
   }

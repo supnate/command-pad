@@ -2,15 +2,26 @@
 
 .home-status-page {
   font-family: arial;
-
+  // * {
+  //   animation-duration: 0s !important;
+  // }
   &.loading {
     padding: 20px;
     text-align: center;
   }
   .header {
-    .anticon-info-circle-o, .anticon-edit, .anticon-setting {
+    .anticon-info-circle-o, .anticon-swap, .anticon-setting {
       float: right;
       margin-left: 10px;
+    }
+
+    .anticon-swap {
+      transform: rotate(-90deg);
+    }
+
+    .anticon-info-circle-o {
+      transform: translateY(1px);
+      font-size: 18px;
     }
   }
 
@@ -40,6 +51,9 @@
     .output-list {
       color: #28da36;
     }
+  }
+  .ant-popover-arrow {
+    // display: none;
   }
 
   .footer {

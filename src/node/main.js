@@ -12,11 +12,7 @@ const checkUpdate = require('./check_update');
 let win = null;
 let willQuitApp = false;
 
-console.log(process.env.NODE_ENV);
-
 const isDev = process.env.NODE_ENV === 'development';
-
-
 
 function createWindow () {
   // Create the browser window.

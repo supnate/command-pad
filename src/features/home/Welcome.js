@@ -10,13 +10,13 @@ export default class Welcome extends PureComponent {
           Welcome to Command Pad!
         </h2>
         <p>
-          Command Pad is a central place for managing all of your command line programs.
+          Command Pad is a central place for managing your command line programs.
         </p>
         <p>
           It's motivated by the need for running multiple dev servers for modern web development. Such as: Webpack dev-server, Storybook dev-server, Gitbook dev-server, API proxy server etc.
         </p>
         <p>
-          It's also suitable for other command line scenarios, such as running tests, launch Java apps, etc.
+          It's also suitable for other scenarios, such as running tests, launch Java apps, etc.
         </p>
         <p>
           Command Pad is an open source app. Any question or advice please visit the <a href="https://github.com/supnate/command-pad">project page</a> on GitHub.

@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { hashHistory, Link } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Checkbox, Col, Form, Icon, Input, InputNumber, message, Popover, Row, Tooltip } from 'antd';
+import { Button, Form, Icon, Input, InputNumber, message, Tooltip } from 'antd';
 import * as actions from './redux/actions';
 
 const FormItem = Form.Item;
@@ -11,6 +11,7 @@ export class SettingsPage extends Component {
   static propTypes = {
     home: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
   };
 
   constructor(props) {

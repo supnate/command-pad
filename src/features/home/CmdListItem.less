@@ -16,11 +16,21 @@
     color: gray;
     cursor: pointer;
 
+    &:hover {
+      &:before {
+        color: #4CAF50;
+      }
+    }
+
     &.anticon-stop-circle {
       width: 20px;
       height: 20px;
       border-radius: 10px;
       background-color: #4CAF50;
+
+      &:hover {
+        background-color: darken(#4CAF50, 5%);
+      }
       &:after {
         position: absolute;
         left: 6px;
@@ -144,9 +154,32 @@
     }
 
     .anticon-eye-o {
+      position: relative;
       display: inline-block;
       font-size: 20px;
       color: #57c5f7;
+
+      &:after {
+        // opacity: 0;
+        // position: absolute;
+        // left: -9px;
+        // top: 2px;
+        // display: block;
+        // content: ' ';
+        // width: 0;
+        // height: 0;
+        // border-top: 7px solid transparent;
+        // border-left: 7px solid #000;
+        // border-bottom: 7px solid transparent;
+
+        // transition: opacity 0.2s;
+      }
+
+      // &:hover {
+      //   &:after {
+      //     opacity: 1;
+      //   }
+      // }
     }
   }
 
