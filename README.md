@@ -58,8 +58,5 @@ Click `sort` icon on the header:
 
 <img src="/images/sort-icon.png?raw=true" width="362">
 
-# Development
-To doc...
-
 # License
 MIT
