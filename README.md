@@ -1,7 +1,7 @@
 
-# Command Pad
+<img src="/images/logo.png?raw=true" width="128">
 
-<img src="/images/logo.png?raw=true" width="64">
+# Command Pad
 
 Command Pad is a handy GUI application for managing your command line programs.
 It helps to start and stop a command line program easily and you can also monitor the output.
