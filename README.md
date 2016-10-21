@@ -5,7 +5,7 @@ It helps to start and stop a command line program easily and you can also monito
 
 # Downloads
 Version 0.1.0 Released at 2016-10-22:
-* MacOS: [command-pad-0.1.0.dmg](https://supnate.github.io/command-pad-dist/downloads/Command Pad-0.1.0.dmg)
+* MacOS: [Command Pad-0.1.0.dmg](https://supnate.github.io/command-pad-dist/downloads/Command Pad-0.1.0.dmg)
 * Windows: incoming...
 
 # Motivation
@@ -28,7 +28,7 @@ Besides running dev servers, Command Pad is also useful for:
 3. ...
 
 # More screenshots
-Intuitive to add a command:
+Intuitive UI to add a command:
 
 <img src="/images/pic2.png?raw=true" width="472">
 
@@ -48,9 +48,11 @@ Alert you when some command is finished:
 5. ...
 
 # FAQ:
-#### Why is this "little tool" so large?
-Command Pad is built with Electron. The minimal dmg built is 35MB.
-#### How to delete a command?
+### Why is this "little tool" so large?
+Command Pad is built with [Electron](http://electron.atom.io/). The minimal dmg size is about 35MB.
+### Why can't I interact with the command?
+Command Pad is not to replace your terminal. It's just used for running command line services. So you can't type in the output window.
+### How to delete a command?
 Click `sort` icon on the header:
 
 <img src="/images/sort-icon.png?raw=true" width="362">
