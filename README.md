@@ -20,7 +20,7 @@ Managing them is frustrating. It's not intuitive which service you need is runni
 
 So I created this little tool to manage all of my frequently used command line programs. It looks like:
 
-<img src="/images/pic1.png?raw=true" width="472">
+<img src="/images/pic1.png?raw=true" width="360">
 
 It helps to manage command line programs in one central place with intuitive UI.
 
@@ -34,15 +34,15 @@ Besides running dev servers, Command Pad is also useful for:
 # More screenshots
 Intuitive UI to add a command:
 
-<img src="/images/pic2.png?raw=true" width="472">
+<img src="/images/pic2.png?raw=true" width="360">
 
 Colorful output:
 
-<img src="/images/pic3.png?raw=true" width="472">
+<img src="/images/pic3.png?raw=true" width="360">
 
 Alert you when some command is finished:
 
-<img src="/images/pic4.png?raw=true" width="472">
+<img src="/images/pic4.png?raw=true" width="360">
 
 # Features
 1. Monitor the output and keep the color.
