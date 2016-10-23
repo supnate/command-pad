@@ -16,7 +16,7 @@ For the modern web development, it usually needs several terminals opened for ju
 
 <img src="/images/terminal.png?raw=true" width="600">
 
-Managing them is frustrating. It's not intuitive which service you need is running and which has stopped unexpectly. Useful terminals which need interactions often collapse into the dropdown menu.
+Managing them is frustrating. It's not intuitive which service you need is running and which has stopped unexpectly. But the useful terminals which need interactions often collapse into the dropdown menu.
 
 So I created this little tool to manage all of my frequently used command line programs. It looks like:
 
