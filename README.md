@@ -8,7 +8,7 @@ It helps to start and stop a command line program easily and you can also monito
 
 # Downloads
 Version 0.1.0 Released at 2016-10-22:
-* MacOS: [Command Pad-0.1.0.dmg](https://supnate.github.io/command-pad-dist/downloads/Command Pad-0.1.0.dmg)
+* MacOS: [Command Pad-0.1.0.dmg](https://github.com/supnate/command-pad/releases/download/v0.1.0/Command.Pad-0.1.0.dmg)
 * Windows: is coming...
 
 # Motivation
