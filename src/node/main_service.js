@@ -1,16 +1,21 @@
 'use strict';
 const path = require('path');
 const _ = require('lodash');
-const spawn = require('child_process').spawn;
+const child_process = require('child_process');
 const { app, dialog, ipcMain, nativeImage } = require('electron');
 const Config = require('electron-config');
+
+const spawn = child_process.spawn;
+const exec = child_process.exec;
 const Convert = require('ansi-to-html');
 // const Sudoer = require('electron-sudo').default;
 // const runCmd = require('./run_cmd');
-const pty = require('pty.js');
+// const pty = require('pty.js');
 
 const convert = new Convert();
 const config = new Config();
+
+const isWin = process.platform === 'win32';
 
 const iconSuccess = nativeImage.createFromPath(path.join(__dirname, '../images/iconSuccess.png'));
 const iconError = nativeImage.createFromPath(path.join(__dirname, '../images/iconError.png'));
@@ -31,15 +36,55 @@ for (const c of cmds) {
 const cmdHash = {};
 cmds.forEach(cmd => cmdHash[cmd.id] = cmd); // eslint-disable-line
 
-process.on('exit', () => {
+function stopCmd(cmd) {
+  console.log('stopping cmd: ', cmd.id);
+  if (!cmd || !cmd.process) return;
+  try {
+    if (isWin) {
+      console.log('pid: ', cmd.process.pid);
+      child_process.exec('taskkill /pid ' + cmd.process.pid + ' /T /F');
+    } else {
+      cmd.process.destroy();
+    }
+  } catch(e) {
+    console.log('failed to kill the process: ', e);
+  }
+}
+// process.on('exit', () => {
+//   console.log('process exit');
+//   for (const cmd of cmds) {
+//     if (cmd.process) {
+//       stopCmd(cmd);
+//     }
+//   }
+// });
+
+function stopAllCmds() {
+  console.log('app will quit.');
   for (const cmd of cmds) {
     if (cmd.process) {
-      cmd.process.destroy();
-      // process.kill(-cmd.process.pid);
+      stopCmd(cmd);
     }
   }
-});
+}
 
+function getEnvPath() {
+  let envPath = config.get('envPath');
+  if (envPath) {
+    if (process.platform === 'win32') {
+      envPath = ';' + envPath;
+    } else {
+      envPath = ':/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:/usr/local/share/node/bin:' + envPath;
+    }
+  } else {
+    envPath = ':/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin:/usr/local/share/node/bin';
+  }
+  return envPath;
+}
+
+module.exports = {
+  appWillQuit: stopAllCmds
+};
 
 function getOutputRowsLimit() {
   return config.get('outputRowsLimit') || 100;
@@ -50,6 +95,7 @@ ipcMain.on('GET_INIT_DATA', (evt) => {
     appVersion: app.getVersion(),
     envPath: config.get('envPath'),
     outputRowsLimit: getOutputRowsLimit(),
+    isWin: isWin,
     cmds: cmds.map(c => Object.assign(_.pick(c, ['id', 'name', 'cmd', 'cwd', 'sudo', 'outputs', 'url', 'finishPrompt']), { status: c.process ? 'running' : 'stopped' })),
   });
 });
@@ -93,9 +139,7 @@ ipcMain.on('DELETE_CMD', (evt, cmdId) => {
   // Stop the process if needed
   const cmd = cmdHash[cmdId];
   if (cmd.process) {
-    try {
-      process.kill(-cmd.process.pid);
-    } catch(e) {} // eslint-disable-line
+    stopCmd(cmd);
   }
   // Save to config
   const newCmds = config.get('cmds') || [];
@@ -128,93 +172,75 @@ ipcMain.on('REORDER_CMDS', (evt, cmdIds) => {
 });
 
 /* ==================== Run Command ============================== */
+if (isWin) ipcMain.on('RUN_CMD', (evt, cmdId) => { // eslint-disable-line
+  const cmd = cmdHash[cmdId];
+  evt.sender.send('RUN_CMD_SUCCESS', cmdId);
+  if (cmd.process) {
+    // prevent from running multiple times.
+    return;
+  }
 
-// function sudoRunCmd(evt, cmdId) {
-  
-//   const cmd = cmdHash[cmdId];
-//   const arr = cmd.cmd.split(' ').filter(item => !!item);
-//   const target = arr.shift();
+  let arr = cmd.cmd.match(/'[^']*'|"[^"]*"|[^ ]+/g) || [];
+  arr = arr.map(m => m.replace(/^['"]|['"]/g, ''));
+  arr = ['/s', '/c'].concat(arr);
 
-//   let options = {name: cmd.name};
-//   const sudoer = new Sudoer(options);
 
-//   let lineId = 0;
-//   cmd.outputs.length = 0;
-//   function onData(chunk) {
-//     const out = chunk.toString('utf8');
-//     for (const line of out.split('\n')) {
-//       if (cmd.outputs.length >= 10) cmd.outputs.unshift();
-//       cmd.outputs.push({
-//         id: `${cmdId}_${lineId++}`, //eslint-disable-line
-//         text: line,
-//       });
-//     }
-//     evt.sender.send('CMD_OUTPUT', cmdId, [].concat(cmd.outputs));
-//   }
-//   sudoer.spawn(target, arr).then((cp) => {
-//     cp.stdout.on('data', onData);
-//     cp.stderr.on('data', onData);
-//     cp.on('exit', (code) => {
-//       delete cmd.process;
-//       evt.sender.send('CMD_FINISHED', cmdId, code);
-//     });
-//     cmd.process = cp;
-//   }).catch((err) => {
-//     evt.sender.send('CMD_FINISHED', cmdId, 1, err);
-//   });
-// }
+  console.log('running cmd: ', cmd.cmd, arr);
+  const envPath = getEnvPath();
+  const child = spawn('cmd', arr, {
+    cwd: cmd.cwd,
+    stdio: 'pipe',
+    env: Object.assign({}, process.env, { Path: `${process.env.Path}${envPath}` }),
+  });
 
-// ipcMain.on('RUN_CMD2', (evt, cmdId) => {
-//   const cmd = cmdHash[cmdId];
-//   evt.sender.send('RUN_CMD_SUCCESS', cmdId);
-//   if (cmd.process) {
-//     // prevent from running multiple times.
-//     return;
-//   }
-//   if (cmd.sudo) {
-//     sudoRunCmd(evt, cmdId);
-//     return;
-//   }
-//   const arr = cmd.cmd.split(' ').filter(item => !!item);
-//   const target = arr.shift();
-//   const child = spawn(target, arr, {
-//     cwd: cmd.cwd,
-//     stdio: 'pipe',
-//     detached: true,
-//   });
+  child.stdout.pipe(process.stdout);
+  cmd.process = child;
 
-//   child.stdout.pipe(process.stdout);
-//   cmd.process = child;
+  let lineId = 0;
+  cmd.outputs.length = 0;
+  function onData(chunk) {
+    let out = chunk.toString('utf8');
+    out = out.replace(/[\n\r]$/, '');
+    const lines = out.split('\n');
+    const rowsLimit = getOutputRowsLimit();
+    for (const line of lines) {
+      cmd.outputs.push({
+        id: `${cmdId}_${lineId++}`, //eslint-disable-line
+        text: line.replace(/>/g, '&gt;').replace(/</g, '&lt;'),
+      });
+      if (cmd.outputs.length >= rowsLimit) {
+        cmd.outputs.splice(0, cmd.outputs.length - rowsLimit);
+      }
+    }
 
-//   let lineId = 0;
-//   cmd.outputs.length = 0;
-//   function onData(chunk) {
-//     const out = chunk.toString('utf8');
-//     for (const line of out.split('\n')) {
-//       if (cmd.outputs.length >= 10) cmd.outputs.unshift();
-//       cmd.outputs.push({
-//         id: `${cmdId}_${lineId++}`, //eslint-disable-line
-//         text: line,
-//       });
-//     }
-//     evt.sender.send('CMD_OUTPUT', cmdId, [].concat(cmd.outputs));
-//   }
-//   child.stdout.on('data', onData);
-//   child.stderr.on('data', onData);
+    // const out = chunk.toString('utf8');
+    // for (const line of out.split('\n')) {
+    //   if (cmd.outputs.length >= 10) cmd.outputs.unshift();
+    //   cmd.outputs.push({
+    //     id: `${cmdId}_${lineId++}`, //eslint-disable-line
+    //     text: line,
+    //   });
+    // }
+    evt.sender.send('CMD_OUTPUT', cmdId, [].concat(cmd.outputs));
+  }
+  child.stdout.on('data', onData);
+  child.stderr.on('data', onData);
 
-//   child.on('exit', (code) => {
-//     delete cmd.process;
-//     evt.sender.send('CMD_FINISHED', cmdId, code);
-//   });
+  child.on('exit', (code) => {
+    delete cmd.process;
+    evt.sender.send('CMD_FINISHED', cmdId, code);
+  });
 
-//   child.on('error', (error) => {
-//     delete cmd.process;
-//     evt.sender.send('CMD_FINISHED', cmdId, 99, error);
-//   });
-// });
+  child.on('error', (error) => {
+    delete cmd.process;
+    evt.sender.send('CMD_FINISHED', cmdId, 99, error);
+  });
+});
 
 /* ==================== Run Command with pty.js ============================== */
-ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
+if (!isWin) ipcMain.on('RUN_CMD', (evt, cmdId, password) => { // eslint-disable-line
+  const pty = require('pty.js');
+
   console.log('running cmd: ', cmdId);
   const cmd = cmdHash[cmdId];
   evt.sender.send('RUN_CMD_SUCCESS', cmdId);
@@ -223,7 +249,8 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
     return;
   }
 
-  const arr = cmd.cmd.match(/'[^']*'|"[^"]*'|[^ ]+/g) || [];
+  let arr = cmd.cmd.match(/'[^']*'|"[^"]*"|[^ ]+/g) || [];
+  arr = arr.map(m => m.replace(/^['"]|['"]/g, ''));
   let target;
   if (cmd.sudo) {
     target = 'sudo';
@@ -280,7 +307,7 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
         id: `${cmdId}_${lineId++}`, //eslint-disable-line
         text: convert.toHtml(line.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/\s/g, '&nbsp;')),
       });
-      if (cmd.outputs.length >= rowsLimit ) {
+      if (cmd.outputs.length >= rowsLimit) {
         cmd.outputs.splice(0, cmd.outputs.length - rowsLimit);
       }
     }
@@ -309,13 +336,10 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => {
 ipcMain.on('STOP_CMD', (evt, cmdId) => {
   console.log('stopping cmd: ', cmdId);
   const cmd = cmdHash[cmdId];
+
   if (cmd.process) {
     cmd._manualStop = true;
-    try {
-      cmd.process.kill('SIGINT');
-      cmd.process.destroy();
-    } catch(e) {}
-    // process.kill(-cmd.process.pid);
+    stopCmd(cmd);
   }
 });
 

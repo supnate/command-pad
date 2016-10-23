@@ -2,7 +2,7 @@
 const path = require('path');
 const { app, dialog, BrowserWindow, Menu, Tray } = require('electron');
 
-require('./main_service');
+const mainService = require('./main_service');
 const checkUpdate = require('./check_update');
 
 
@@ -13,6 +13,7 @@ let win = null;
 let willQuitApp = false;
 
 const isDev = process.env.NODE_ENV === 'development';
+const isWin = process.platform === 'win32';
 
 function createWindow () {
   // Create the browser window.
@@ -41,7 +42,7 @@ function createWindow () {
   })
 
   win.on('close', (e) => {
-    if (willQuitApp) {
+    if (willQuitApp || isWin) {
       /* the user tried to quit the app */
       win = null;
     } else {
@@ -50,14 +51,16 @@ function createWindow () {
       win.hide();
     }
   });
-  const tray = new Tray(path.join(__dirname, '../images/iconTemplate.png'));
-  tray.on('click', () => {
-    win.show();
-  });
+  if (!isWin) {
+    const tray = new Tray(path.join(__dirname, '../images/iconTemplate.png'));
+    tray.on('click', () => {
+      win.show();
+    });
   // tray.setToolTip('Command Pad')
-  // appIcon.setPressedImage(`${__dirname}/../../build/trayicon-highlight.png`);  
+  }
+  // appIcon.setPressedImage(`${__dirname}/../../build/trayicon-highlight.png`);
 
-  if (!isDev) {
+  if (!isDev && !isWin) {
     var template = [{
       label: 'Command Pad',
       submenu: [
@@ -83,7 +86,7 @@ function createWindow () {
 }
 
 app.on('before-quit', () => {
-  willQuitApp = true;
+  if (!isWin) willQuitApp = true;
 });
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -95,6 +98,7 @@ app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
+    console.log('all closed.');
     app.quit()
   }
 })
@@ -108,6 +112,10 @@ app.on('activate', () => {
     win.show()
   }
 })
+
+app.on('will-quit', () => {
+  mainService.appWillQuit();
+});
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
