@@ -9,7 +9,7 @@ It helps to start and stop a command line program easily and you can also monito
 # Downloads
 Version 0.1.0 Released at 2016-10-22:
 * MacOS: [Command Pad-0.1.0.dmg](https://github.com/supnate/command-pad/releases/download/v0.1.0/Command.Pad-0.1.0.dmg)
-* Windows: is coming...
+* Windows: [Command.Pad.Setup.0.1.0.zip]https://github.com/supnate/command-pad/releases/download/v0.1.0/Command.Pad.Setup.0.1.0.zip
 
 # Motivation
 For the modern web development, it usually needs several terminals opened for just running various dev servers, for example below is my terminal typically looks like:
