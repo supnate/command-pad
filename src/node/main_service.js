@@ -1,13 +1,13 @@
 'use strict';
 const path = require('path');
 const _ = require('lodash');
-const child_process = require('child_process');
-const { app, dialog, ipcMain, nativeImage, Notification } = require('electron');
+const childProcess = require('child_process');
+const { app, ipcMain } = require('electron');
 const Config = require('electron-config');
 const notifier = require('node-notifier');
 
-const spawn = child_process.spawn;
-const exec = child_process.exec;
+const spawn = childProcess.spawn;
+const exec = childProcess.exec;
 const Convert = require('ansi-to-html');
 // const Sudoer = require('electron-sudo').default;
 // const runCmd = require('./run_cmd');
@@ -48,8 +48,7 @@ function stopCmd(cmd) {
   if (!cmd || !cmd.process) return;
   try {
     if (isWin) {
-      console.log('pid: ', cmd.process.pid);
-      child_process.exec('taskkill /pid ' + cmd.process.pid + ' /T /F');
+      exec('taskkill /pid ' + cmd.process.pid + ' /T /F');
     } else {
       cmd.process.destroy();
     }
@@ -80,10 +79,6 @@ function getEnvPath() {
   }
   return envPath;
 }
-
-module.exports = {
-  appWillQuit: stopAllCmds
-};
 
 function getOutputRowsLimit() {
   return config.get('outputRowsLimit') || 100;
@@ -226,7 +221,7 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => { // eslint-disable-line
     delete cmd._manualStop;
     if (!cmd._manualStop && cmd.finishPrompt) {
       notifier.notify({ // eslint-disable-line
-        title: 'Command finished',
+        title: 'Command Pad',
         message: `Command ${code > 0 ? 'failed' : 'finished'}: ${cmd.name} .`,
         icon: code > 0 ? iconErrorPath : iconSuccessPath,
         wait: true,
@@ -303,4 +298,8 @@ ipcMain.on('CLEAR_OUTPUT', (evt, cmdId) => {
   cmd.outputs.length = 0;
   evt.sender.send('CLEAR_OUTPUT_SUCCESS');
 });
+
+module.exports = {
+  appWillQuit: stopAllCmds
+};
 
