@@ -1,7 +1,3 @@
-app/images
-app/node
-app/index.html
-app/static
 node_modules
 npm-debug.log
 target
