@@ -1,11 +1,9 @@
 'use strict';
 const path = require('path');
-const { app, dialog, BrowserWindow, Menu, Tray } = require('electron');
+const { app, BrowserWindow, Menu, Tray } = require('electron');
 
 const mainService = require('./main_service');
 const checkUpdate = require('./check_update');
-
-
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -15,13 +13,15 @@ let willQuitApp = false;
 const isDev = process.env.NODE_ENV === 'development';
 const isWin = process.platform === 'win32';
 
-function createWindow () {
+function createWindow() {
   // Create the browser window.
   if (isDev) {
     win = new BrowserWindow({width: 860, height: 600 });
   } else {
     win = new BrowserWindow({width: 360, height: 600 });
   }
+
+  global.CP_WIN = win;
 
   // and load the index.html of the app.
   if (isDev) {

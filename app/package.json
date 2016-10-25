@@ -13,7 +13,7 @@
     "electron-config": "^0.2.1",
     "lodash": "^4.14.2",
     "node-version-compare": "^1.0.1",
-    "pty.js": "^0.3.1",
+    "ptyw.js": "0.4.1",
     "request": "^2.75.0"
   }
 }
