@@ -9,8 +9,6 @@ const notifier = require('node-notifier');
 const spawn = childProcess.spawn;
 const exec = childProcess.exec;
 const Convert = require('ansi-to-html');
-// const Sudoer = require('electron-sudo').default;
-// const runCmd = require('./run_cmd');
 
 const convert = new Convert();
 const config = new Config();
@@ -203,7 +201,12 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => { // eslint-disable-line
     const lines = out.split('\n');
     const rowsLimit = getOutputRowsLimit();
     for (const line of lines) {
-      let text = line.replace(/>/g, '&gt;').replace(/</g, '&lt;');
+      let text = line
+        .replace(/>/g, '&gt;')
+        .replace(/</g, '&lt;')
+        .replace(/^\s/g, '&nbsp;')
+      ;
+
       if (!isWin) text = convert.toHtml(text);
       cmd.outputs.push({
         id: `${cmdId}_${lineId++}`, //eslint-disable-line
