@@ -1,3 +1,7 @@
+app/index.html
+app/node
+app/static
+app/images
 node_modules
 npm-debug.log
 target
