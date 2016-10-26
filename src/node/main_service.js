@@ -5,6 +5,7 @@ const childProcess = require('child_process');
 const { app, ipcMain } = require('electron');
 const Config = require('electron-config');
 const notifier = require('node-notifier');
+const sendStat = require('./send_stat');
 
 const spawn = childProcess.spawn;
 const exec = childProcess.exec;
@@ -42,7 +43,7 @@ const cmdHash = {};
 cmds.forEach(cmd => cmdHash[cmd.id] = cmd); // eslint-disable-line
 
 function stopCmd(cmd) {
-  console.log('stopping cmd: ', cmd.id);
+  console.log('stopping cmd2: ', cmd.id);
   if (!cmd || !cmd.process) return;
   try {
     if (isWin) {
@@ -123,6 +124,8 @@ ipcMain.on('SAVE_CMD', (evt, data, cmdId) => {
 
   cmdHash[cmd.id] = curr;
   evt.sender.send('SAVE_CMD_SUCCESS', cmd);
+
+  sendStat({ type: cmdId ? 'update_cmd' : 'add_cmd', cmd_count: cmds.length });
 });
 
 /* ==================== Delete Command ============================== */
@@ -143,6 +146,8 @@ ipcMain.on('DELETE_CMD', (evt, cmdId) => {
   delete cmdHash[cmdId];
 
   evt.sender.send('DELETE_CMD_SUCCESS', cmdId);
+
+  sendStat({ type: 'del_cmd', cmd_count: cmds.length });
 });
 
 /* ==================== Reorder Commands ============================== */
@@ -161,6 +166,8 @@ ipcMain.on('REORDER_CMDS', (evt, cmdIds) => {
   }
 
   evt.sender.send('REORDER_CMDS_SUCCESS', cmdIds);
+
+  sendStat({ type: 'reorder_cmds', cmd_count: cmds.length });
 });
 
 /* ==================== Run Command ============================== */
@@ -227,6 +234,7 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => { // eslint-disable-line
         title: 'Command Pad',
         message: `Command ${code > 0 ? 'failed' : 'finished'}: ${cmd.name} .`,
         icon: code > 0 ? iconErrorPath : iconSuccessPath,
+        // icon: path.join(__dirname, '../images/logo.png'),
         wait: true,
       });
     }
@@ -269,19 +277,23 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => { // eslint-disable-line
       detached: true,
       env: Object.assign({}, process.env, { PATH: `${process.env.PATH}${envPath}` }),
     });
+    cmd.process = term;
     term.on('data', onData);
     term.on('exit', onExit);
   }
+
+  sendStat({ type: 'run_cmd', cmd_count: cmds.length });
 });
 
 /* ==================== Stop Command ============================== */
 ipcMain.on('STOP_CMD', (evt, cmdId) => {
-  console.log('stopping cmd: ', cmdId);
   const cmd = cmdHash[cmdId];
+  console.log('stopping cmd: ', cmdId, !!cmd.process);
 
   if (cmd.process) {
     cmd._manualStop = true;
     stopCmd(cmd);
+    sendStat({ type: 'stop_cmd', cmd_count: cmds.length });
   }
 });
 
@@ -291,6 +303,8 @@ ipcMain.on('SAVE_SETTINGS', (evt, data) => {
   config.set('envPath', data.envPath);
   config.set('outputRowsLimit', parseInt(data.outputRowsLimit, 10) || 100);
   evt.sender.send('SAVE_SETTINGS_SUCCESS');
+
+  sendStat({ type: 'save_settings', cmd_count: cmds.length });
 });
 
 
@@ -300,6 +314,7 @@ ipcMain.on('CLEAR_OUTPUT', (evt, cmdId) => {
   const cmd = cmdHash[cmdId];
   cmd.outputs.length = 0;
   evt.sender.send('CLEAR_OUTPUT_SUCCESS');
+  sendStat({ type: 'clear_output', cmd_count: cmds.length });
 });
 
 module.exports = {

@@ -4,6 +4,7 @@ const { app, BrowserWindow, Menu, Tray } = require('electron');
 
 const mainService = require('./main_service');
 const checkUpdate = require('./check_update');
+const sendStat = require('./send_stat');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -83,6 +84,9 @@ function createWindow() {
   }
 
   checkUpdate();
+  sendStat({
+    type: 'start',
+  });
 }
 
 app.on('before-quit', () => {

@@ -1,7 +1,7 @@
 {
   "name": "command-pad",
   "productName": "Command Pad",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "GUI for running terminal commands.",
   "main": "src/node/main.js",
   "scripts": {
