@@ -24,7 +24,7 @@ export class App extends Component {
 
   render() {
     return (
-      <div className="app">
+      <div className={`app ${this.props.home.isWin ? 'is-win' : ''}`}>
         <div className="page-container">
           {this.props.children}
         </div>

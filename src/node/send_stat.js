@@ -14,9 +14,11 @@ function guid() {
 function sendStat(data) {
   try {
     let uid = config.get('uid');
+    let isInstall = false;
     if (!uid) {
       uid = 'u_' + guid();
       config.set('uid', uid);
+      isInstall = true;
     }
     const statData = Object.assign({
       platform: process.platform,
@@ -29,6 +31,10 @@ function sendStat(data) {
         },
       },
     }, data);
+
+    if (isInstall) {
+      statData.type = 'install';
+    }
 
     const options = {
       url: 'https://leancloud.cn:443/1.1/classes/StatEntry',
