@@ -278,7 +278,7 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => { // eslint-disable-line
       env: Object.assign({}, process.env, { PATH: `${process.env.PATH}${envPath}` }),
     });
     cmd.process = term;
-    term.on('data', onData);
+    term.on('data', chunk => onData(chunk, term));
     term.on('exit', onExit);
   }
 
