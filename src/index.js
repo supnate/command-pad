@@ -40,7 +40,6 @@ bridge.ipcRenderer.on('CMD_OUTPUT', (evt, cmdId, outputs) => {
   }
 });
 
-
 render(
   <Provider store={store}>
     <Router history={history} routes={routeConfig} />

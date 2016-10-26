@@ -16,6 +16,12 @@ export class App extends Component {
     }
   }
 
+  componentDidUpdate() {
+    if (this.props.home.appVersion && document.body.className) {
+      document.body.className = '';
+    }
+  }
+
   render() {
     return (
       <div className="app">

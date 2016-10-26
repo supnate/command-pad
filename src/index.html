@@ -4,11 +4,17 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Command Pad</title>
     <style type="text/css">
-      body {
+      html { height: 100%; }
+      body.loading {
+        background: #fff url(./images/logo_loading.png) 50% 40% no-repeat;
+        background-size: 80px;
+      }
+      body.loading * {
+        visibility: hidden;
       }
     </style>
   </head>
-  <body>
+  <body class="loading">
     <script src="./node/bridge.js"></script>
     <script src="http://localhost:6076/.tmp/vendors.dll.js"></script>
     <script src="http://localhost:6076/static/main.bundle.js"></script>

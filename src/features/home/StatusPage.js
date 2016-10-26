@@ -27,15 +27,6 @@ export class StatusPage extends Component {
     editing: false,
   };
 
-  componentDidMount() {
-    // if (!this.props.home.appVersion) {
-    //   this.props.actions.getInitData()
-    //     .then(() => this.setState({
-    //       cmds: this.props.home.cmdIds.map(id => this.props.home.cmdById[id]).slice(),
-    //     }));
-    // }
-  }
-
   handleBeginEdit() {
     this.setState({
       editing: true,
