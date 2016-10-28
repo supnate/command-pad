@@ -35,7 +35,8 @@
       "icon": "build/icon.icns"
     },
     "mac": {
-      "category": "Tools"
+      "category": "Tools",
+      "target": "mas"
     },
     "win": {
       "target": "nsis",
