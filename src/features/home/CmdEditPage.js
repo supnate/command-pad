@@ -45,7 +45,7 @@ export class CmdEditPage extends Component {
     const { getFieldDecorator } = this.props.form;
     const cmdId = this.props.params.cmdId;
     const initialData = cmdId ? this.props.home.cmdById[cmdId] : {};
-
+    const { isWin } = this.props.home;
     return (
       <div className="rekit-page home-cmd-edit-page">
         <div className="header">
@@ -74,14 +74,14 @@ export class CmdEditPage extends Component {
                 <Input size="default" />
               )}
             </FormItem>
-            <FormItem>
+            {!isWin && <FormItem>
               {getFieldDecorator('sudo', {
                 valuePropName: 'checked',
                 initialValue: !!initialData.sudo,
               })(
                 <Checkbox>{this.getFormItemLabel('Sudo', 'Whether the command needs administrative privileges.')}</Checkbox>
               )}
-            </FormItem>
+            </FormItem>}
             <FormItem label={this.getFormItemLabel('Working directory', 'Optional. The working directory to run the command.')}>
               {getFieldDecorator('cwd', {
                 initialValue: initialData.cwd || '',
