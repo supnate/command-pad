@@ -3,7 +3,7 @@
 
 # Command Pad
 
-Command Pad is a handy GUI application for managing your command line programs.
+Command Pad is a handy GUI application for running your command line tasks.
 It helps to start and stop a command line program easily and you can also monitor the output.
 
 # Downloads
