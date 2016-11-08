@@ -6,6 +6,8 @@
 Command Pad is a handy GUI application for running your command line tasks.
 It helps to start and stop a command line program easily and you can also monitor the output.
 
+You can learn more about it by the review by @softpedia: http://www.softpedia.com/get/Programming/Other-Programming-Files/Command-Pad.shtml
+
 # Downloads
 Version 0.1.1 Released at 2016-10-26:
 * MacOS: [Command Pad-0.1.1.dmg](https://github.com/supnate/command-pad/releases/download/v0.1.1/Command.Pad-0.1.1.dmg)
