@@ -4,9 +4,9 @@
 # Command Pad
 
 Command Pad is a handy GUI application for running your command line tasks.
-It helps to start and stop a command line program easily and you can also monitor the output.
+It helps to start and stop a command line tools easily and you can also monitor the output.
 
-You can learn more about it by the review by @softpedia: http://www.softpedia.com/get/Programming/Other-Programming-Files/Command-Pad.shtml
+You can learn more about it by the review from @softpedia: http://www.softpedia.com/get/Programming/Other-Programming-Files/Command-Pad.shtml
 
 # Downloads
 Version 0.1.1 Released at 2016-10-26:
@@ -24,7 +24,7 @@ So I created this little tool to manage all of my frequently used command line p
 
 <img src="/images/pic1.png?raw=true" width="360">
 
-It helps to manage command line programs in one central place with intuitive UI.
+It helps to manage command line tools in one central place with intuitive UI.
 
 # Use cases
 Besides running dev servers, Command Pad is also useful for:
