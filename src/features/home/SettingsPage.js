@@ -55,7 +55,7 @@ export class SettingsPage extends Component {
                 <InputNumber size="default" style={{ width: '100%' }} />
               )}
             </FormItem>
-            <FormItem label={this.getFormItemLabel('Environment path', 'The environment path to find the command. You may need to set this when using nvm. i.e. /path/to/.nvm/versions/node//bin')}>
+            <FormItem label={this.getFormItemLabel('Environment path', 'The environment path to find the command. You may need to set this when using nvm. i.e. /path/to/.nvm/versions/node/bin')}>
               {getFieldDecorator('envPath', {
                 initialValue: this.props.home.envPath || '',
               })(
