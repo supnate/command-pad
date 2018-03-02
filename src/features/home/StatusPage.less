@@ -37,6 +37,61 @@
     
   }
 
+  .page-content {
+    position: absolute;
+    top: 42px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+
+    .home-cmd-list {
+      position: absolute;
+      width: 300px;
+      overflow: auto;
+      top: 0;
+      bottom: 30px;
+      left: 0;
+    }
+
+    .footer {
+      position: absolute;
+      padding: 0;
+      width: 300px;
+      line-height: 30px;
+      bottom: 0;
+
+      background-color: #eee;
+      color: #999;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .output-container {
+      background-color: #1e1e1e;
+      position: absolute;
+      left: 300px;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      .home-console-output, .output-wrapper {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      .output-list {
+        color: #28da36;
+      }
+      .clear-icon {
+        position: fixed;
+        top: 52px;
+        z-index: 999;
+      }
+    }
+  }
+
   .ant-popover-arrow:after {
     border-left-color: #000!important;
   }
@@ -54,12 +109,5 @@
   }
   .ant-popover-arrow {
     // display: none;
-  }
-
-  .footer {
-    padding: 10px;
-    color: #999;
-    text-align: center;
-    white-space: nowrap;
   }
 }

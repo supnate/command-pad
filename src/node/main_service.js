@@ -5,6 +5,7 @@ const childProcess = require('child_process');
 const { app, ipcMain } = require('electron');
 const Config = require('electron-config');
 const notifier = require('node-notifier');
+const pty = require('node-pty');
 const sendStat = require('./send_stat');
 
 const spawn = childProcess.spawn;
@@ -267,9 +268,9 @@ ipcMain.on('RUN_CMD', (evt, cmdId, password) => { // eslint-disable-line
     } else {
       target = arr.shift();
     }
-    const ptyw = require('ptyw.js');
+    // const ptyw = require('ptyw.js');
 
-    const term = ptyw.spawn(target, arr, {
+    const term = pty.spawn(target, arr, {
       name: 'xterm-color',
       cols: 80,
       rows: 30,

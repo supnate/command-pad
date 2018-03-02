@@ -19,3 +19,4 @@ export {
   SettingsPage,
   ConsoleOutput,
 };
+export { default as ColResizer } from './ColResizer';

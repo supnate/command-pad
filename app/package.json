@@ -14,7 +14,7 @@
     "lodash": "^4.14.2",
     "node-notifier": "^4.6.1",
     "node-version-compare": "^1.0.1",
-    "ptyw.js": "0.4.1",
+    "node-pty": "0.4.1",
     "request": "^2.75.0"
   }
 }

@@ -6,6 +6,8 @@ import { reorderCmds, dismissReorderCmdsError } from './reorderCmds';
 import { runCmd, dismissRunCmdError } from './runCmd';
 import { saveSettings, dismissSaveSettingsError } from './saveSettings';
 import { clearOutput, dismissClearOutputError } from './clearOutput';
+import { setColWidth } from './setColWidth';
+import { selectCmd } from './selectCmd';
 // AUTO MAINTAINED FILE: DO NOT CHANGE
 
 
@@ -25,4 +27,6 @@ export {
   dismissSaveSettingsError,
   clearOutput,
   dismissClearOutputError,
+  setColWidth,
+  selectCmd,
 };

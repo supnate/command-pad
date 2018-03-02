@@ -1,6 +1,5 @@
 import React, { PureComponent, PropTypes } from 'react';
 import _ from 'lodash';
-import memobind from 'memobind';
 import CmdListItem from './CmdListItem';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -14,10 +13,13 @@ class CmdList extends PureComponent {
     deleteCmd: PropTypes.func.isRequired,
     reorderCmds: PropTypes.func.isRequired,
     clearOutput: PropTypes.func.isRequired,
+    selectCmd: PropTypes.func.isRequired,
+    selectedCmd: PropTypes.string,
   };
 
   static defaultProps = {
     cmds: [],
+    selectedCmd: null,
   };
 
   constructor(props) {
@@ -68,6 +70,7 @@ class CmdList extends PureComponent {
               key={item.id}
               index={index}
               cmd={item}
+              selected={item.id === this.props.selectedCmd}
               editing={this.props.editing}
               runCmd={this.props.runCmd}
               stopCmd={this.props.stopCmd}
@@ -75,6 +78,7 @@ class CmdList extends PureComponent {
               clearOutput={this.props.clearOutput}
               moveCmdItem={this.moveCmdItem}
               dropCmdItem={this.dropCmdItem}
+              selectCmd={this.props.selectCmd}
             />
           )
         }

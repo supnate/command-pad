@@ -1,6 +1,7 @@
 import React, { PureComponent, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Link } from 'react-router';
+import classnames from 'classnames';
 import _ from 'lodash';
 import { DragSource, DropTarget } from 'react-dnd';
 import { Icon, Input, Modal, Popover } from 'antd';
@@ -10,7 +11,7 @@ import ConsoleOutput from './ConsoleOutput';
 function collectDragSource(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
+    isDragging: monitor.isDragging(),
   };
 }
 
@@ -29,7 +30,7 @@ const cmdItemSource = {
       id: props.cmd.id,
       index: props.index,
     };
-  }
+  },
 };
 
 const cmdItemTarget = {
@@ -98,10 +99,14 @@ class CmdListItem extends PureComponent {
     stopCmd: PropTypes.func.isRequired,
     deleteCmd: PropTypes.func.isRequired,
     clearOutput: PropTypes.func.isRequired,
+
+    selectCmd: PropTypes.func.isRequired,
+    selected: PropTypes.bool,
   };
 
   static defaultProps = {
     editing: false,
+    selected: false,
   };
 
   constructor(props) {
@@ -147,11 +152,14 @@ class CmdListItem extends PureComponent {
   handleRunCmd() {
     const cmd = this.props.cmd;
     if (cmd.sudo) {
-      this.setState({
-        isPasswordDialogVisible: true,
-      }, () => {
-        this.iptPwd.refs.input.focus();
-      });
+      this.setState(
+        {
+          isPasswordDialogVisible: true,
+        },
+        () => {
+          this.iptPwd.refs.input.focus();
+        }
+      );
       return;
     }
     this.props.runCmd(this.props.cmd.id);
@@ -193,12 +201,16 @@ class CmdListItem extends PureComponent {
         cancelText: 'Cancel',
         onOk: () => {
           this.props.deleteCmd(cmd.id);
-        }
+        },
       });
     } else {
       this.props.deleteCmd(cmd.id);
     }
   }
+
+  handleSelectCmd = () => {
+    this.props.selectCmd(this.props.cmd.id);
+  };
 
   renderOutput() {
     const cmd = this.props.cmd;
@@ -206,18 +218,11 @@ class CmdListItem extends PureComponent {
       let errMsg;
       if (cmd.error.errno === 'ENOENT') errMsg = 'failed to execute the command.';
       else errMsg = cmd.error.message || cmd.error.toString();
-      return (
-        <span className="output error">
-          Error: {errMsg}
-        </span>
-      );
+      return <span className="output error">Error: {errMsg}</span>;
     }
-    const outputs = cmd.outputs ? cmd.outputs.filter(
-      c => !!c.text
-      && c.text !== '&nbsp;'
-      && c.text !== '?25l'
-      && c.text !== '?25h'
-    ) : [];
+    const outputs = cmd.outputs
+      ? cmd.outputs.filter(c => !!c.text && c.text !== '&nbsp;' && c.text !== '?25l' && c.text !== '?25h')
+      : [];
     let msg;
     if (!outputs.length) {
       if (cmd.status === 'running') msg = 'Running...';
@@ -225,10 +230,7 @@ class CmdListItem extends PureComponent {
     } else {
       msg = _.last(outputs).text;
     }
-    return (
-      <span className="output" dangerouslySetInnerHTML={{__html: msg}}>
-      </span>
-    );
+    return <span className="output" dangerouslySetInnerHTML={{ __html: msg }} />;
   }
 
   renderActionIcon() {
@@ -237,39 +239,23 @@ class CmdListItem extends PureComponent {
       case 'running':
       case 'starting':
       case 'stopping':
-        return (
-          <Icon
-            title="Stop"
-            type="stop-circle"
-            className="action-icon"
-            onClick={this.handleStopCmd}
-          />
-        );
+        return <Icon title="Stop" type="stop-circle" className="action-icon" onClick={this.handleStopCmd} />;
       case 'stopped':
-        return (
-          <Icon
-            title="Start"
-            type="play-circle-o"
-            className="action-icon"
-            onClick={this.handleRunCmd}
-          />
-        );
+        return <Icon title="Start" type="play-circle-o" className="action-icon" onClick={this.handleRunCmd} />;
       default:
         return null;
     }
   }
 
   render() {
-    const {
-      connectDragSource,
-      connectDropTarget,
-      isDragging,
-      cmd,
-      editing
-    } = this.props;
+    const { connectDragSource, connectDropTarget, isDragging, cmd, editing, selected } = this.props;
 
     const res = (
-      <li className={`home-cmd-list-item ${cmd.status || 'stopped'}`} style={{ opacity: isDragging ? 0 : 1 }}>
+      <li
+        className={classnames('home-cmd-list-item', `${cmd.status || 'stopped'}`, { selected })}
+        style={{ opacity: isDragging ? 0 : 1 }}
+        onClick={this.handleSelectCmd}
+      >
         <Modal
           title="Sudo password:"
           wrapClassName="cmd-pwd-modal"
@@ -279,39 +265,40 @@ class CmdListItem extends PureComponent {
           okText="Ok"
           cancelText="Cancel"
         >
-          <p><Input value={this.state.password} ref={this.handlePasswordInputShow} type="password" onChange={this.handlePasswordChange} onKeyUp={this.handlePasswordKeyUp} /></p>
+          <p>
+            <Input
+              value={this.state.password}
+              ref={this.handlePasswordInputShow}
+              type="password"
+              onChange={this.handlePasswordChange}
+              onKeyUp={this.handlePasswordKeyUp}
+            />
+          </p>
         </Modal>
 
         {this.renderActionIcon(cmd)}
 
         <div className="display-name">
-          {cmd.url && <ALink className="url-link" url={cmd.url}><Icon type="link" />{this.getPortString(cmd)}</ALink>}
-          <Link
-            to={`/cmd/edit/${cmd.id}`} title={`${cmd.sudo ? 'sudo ' : ''}${cmd.cmd}`}
-            className="name"
-          >
+          {cmd.url && (
+            <ALink className="url-link" url={cmd.url}>
+              <Icon type="link" />
+              {this.getPortString(cmd)}
+            </ALink>
+          )}
+          <Link onClick={evt => evt.stopPropagation()} to={`/cmd/edit/${cmd.id}`} title={`${cmd.sudo ? 'sudo ' : ''}${cmd.cmd}`} className="name">
             {cmd.sudo && <span className="sudo-icon">S</span>}
             {cmd.name || cmd.cmd || 'No name.'}
           </Link>
         </div>
-        
-        {!editing && this.renderOutput(cmd)}
 
         <div className="buttons">
           {editing && <Icon type="delete" title="Delete" onClick={this.handleDeleteCmd} />}
           {editing && <div className="icon-move" title="Move" />}
-          {
-            !editing && cmd.outputs && cmd.outputs.length > 0 &&
-            <Popover
-              trigger="hover"
-              content={this.getOutputPopover(cmd.id)}
-              placement="left"
-              getTooltipContainer={this.getTooltipContainer}
-              arrowPointAtCenter
-            >
+          {!editing &&
+            cmd.outputs &&
+            cmd.outputs.length > 0 && (
               <Icon type="eye-o" />
-            </Popover>
-          }
+            )}
         </div>
       </li>
     );
@@ -322,5 +309,5 @@ class CmdListItem extends PureComponent {
 
 export default _.flow(
   DragSource('CMD_ITEM', cmdItemSource, collectDragSource),
-  DropTarget('CMD_ITEM', cmdItemTarget, collectDropTarget),
+  DropTarget('CMD_ITEM', cmdItemTarget, collectDropTarget)
 )(CmdListItem);

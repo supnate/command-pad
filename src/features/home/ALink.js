@@ -16,7 +16,8 @@ export default class ALink extends PureComponent {
     this.openUrl = this.openUrl.bind(this);
   }
 
-  openUrl() {
+  openUrl(evt) {
+    evt.stopPropagation();
     bridge.openUrl(this.props.url);
   }
 

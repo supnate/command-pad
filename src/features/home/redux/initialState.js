@@ -13,6 +13,8 @@ const initialState = {
   saveSettingsError: null,
   clearOutputPending: false,
   clearOutputError: null,
+  cmdListWidth: 300,
+  selectedCmd: null,
 };
 
 export default initialState;

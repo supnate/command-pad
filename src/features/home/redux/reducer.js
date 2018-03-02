@@ -1,4 +1,3 @@
-import { findCmd, replaceCmd } from '../utils';
 import initialState from './initialState';
 import { reducer as getInitData } from './getInitData';
 import { reducer as runCmd } from './runCmd';
@@ -8,6 +7,8 @@ import { reducer as deleteCmd } from './deleteCmd';
 import { reducer as reorderCmds } from './reorderCmds';
 import { reducer as saveSettings } from './saveSettings';
 import { reducer as clearOutput } from './clearOutput';
+import { reducer as setColWidthReducer } from './setColWidth';
+import { reducer as selectCmdReducer } from './selectCmd';
 
 const reducers = [
   getInitData,
@@ -18,6 +19,8 @@ const reducers = [
   reorderCmds,
   saveSettings,
   clearOutput,
+  setColWidthReducer,
+  selectCmdReducer,
 ];
 
 export default function reducer(state = initialState, action) {
