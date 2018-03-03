@@ -2,11 +2,11 @@ const path = require('path');
 const { app, dialog, shell, nativeImage } = require('electron');
 const request = require('request');
 const compareVersion = require('node-version-compare');
-
+console.log(dialog)
 
 module.exports = function () {
   request('http://supnate.github.io/command-pad-dist/package.json', function (error, response, body) {
-    if (!error && response.statusCode == 200) {
+    if (!error && response.statusCode === 200) {
       try {
         const pkg = JSON.parse(body);
         console.log('latest version: ', pkg.version);

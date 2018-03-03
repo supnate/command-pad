@@ -1,0 +1,29 @@
+@import '../../styles/mixins';
+
+.home-batch-add-cmds {
+  background-color: #fff;
+  top: 100px;
+  width: 100%;
+
+  .scroll-node {
+    max-height: 260px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    &::-webkit-scrollbar {
+      -webkit-appearance: none;
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: rgba(0,0,0,.4);
+      -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+    }
+  }
+
+  .form-footer {
+    padding: 10px 0;
+    .ant-btn {
+      margin-right: 15px;
+    }
+  }
+}

@@ -9,6 +9,7 @@ import { reducer as saveSettings } from './saveSettings';
 import { reducer as clearOutput } from './clearOutput';
 import { reducer as setColWidthReducer } from './setColWidth';
 import { reducer as selectCmdReducer } from './selectCmd';
+import { reducer as importCmdsReducer } from './importCmds';
 
 const reducers = [
   getInitData,
@@ -21,6 +22,7 @@ const reducers = [
   clearOutput,
   setColWidthReducer,
   selectCmdReducer,
+  importCmdsReducer,
 ];
 
 export default function reducer(state = initialState, action) {

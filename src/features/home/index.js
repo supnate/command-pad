@@ -20,3 +20,4 @@ export {
   ConsoleOutput,
 };
 export { default as ColResizer } from './ColResizer';
+export { default as BatchAddCmds } from './BatchAddCmds';

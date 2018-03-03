@@ -6,7 +6,7 @@ import { Button, Col, Form, Icon, Input, Modal, Popover, Row } from 'antd';
 import { Link } from 'react-router';
 import CmdList from './CmdList';
 import { runCmd, stopCmd, deleteCmd, reorderCmds, clearOutput, selectCmd } from './redux/actions';
-import { ConsoleOutput, Welcome } from './';
+import { ConsoleOutput, Welcome, BatchAddCmds } from './';
 
 export class StatusPage extends Component {
   static propTypes = {
@@ -18,10 +18,48 @@ export class StatusPage extends Component {
     super(props);
     this.handleBeginEdit = this.handleBeginEdit.bind(this);
     this.handleEndEdit = this.handleEndEdit.bind(this);
+    this.showImportDialog = () => this.setState({ importDialogVisible: true });
+    this.hideImportDialog = () => this.setState({ importDialogVisible: false });
   }
 
   state = {
+    importDialogVisible: false,
     editing: false,
+    npmScripts: [],
+    prjName: '',
+    workingDirectory: '',
+  };
+
+  importFromPackageJson = () => {
+    bridge.remote.dialog.showOpenDialog(
+      {
+        title: 'Select package.json',
+        filters: [{ name: 'package', extensions: ['json'] }],
+        properties: ['openFile'],
+      },
+      fileNames => {
+        const file = fileNames[0];
+        try {
+          const content = bridge.remote.require('fs').readFileSync(fileNames[0], 'utf8');
+          const cwd = bridge.remote.require('path').dirname(file);
+          const json = JSON.parse(content);
+          const prjName = json.name || 'NONAME';
+          const npmScripts = Object.keys(json.scripts);
+          this.setState({
+            npmScripts,
+            prjName,
+            workingDirectory: cwd,
+            importDialogVisible: true,
+          });
+          // const cmds = _.entries(json.scripts).map(entry => ({
+          //   name: `${prjName} ${entry[0]}`,
+          //   cmd: `npm run ${entry[0]}`,
+          // }));
+        } catch (e) {
+          alert(`Failed to load: ${file}`); // eslint-disable-line
+        }
+      }
+    );
   };
 
   handleBeginEdit() {
@@ -60,12 +98,23 @@ export class StatusPage extends Component {
     const colWidth = home.colWidth;
     return (
       <div className="rekit-page home-status-page">
+        {this.state.importDialogVisible && (
+          <Modal visible width={600} footer={null} title={`Import scripts from ${this.state.prjName}`}>
+            <BatchAddCmds
+              importedCmds={this.state.npmScripts}
+              prjName={this.state.prjName}
+              workingDirectory={this.state.workingDirectory}
+              onClose={this.hideImportDialog}
+            />
+          </Modal>
+        )}
         <div className="header">
           {!editing && (
             <Link to="/cmd/add">
-              <Icon type="plus" />
+              <Icon type="plus" title="Add a Command" />
             </Link>
           )}
+          {!editing && <Icon type="folder" title="Import from Package.json" onClick={this.importFromPackageJson} />}
           {!editing && (
             <Link to="/about">
               <Icon type="info-circle-o" title="About" />
