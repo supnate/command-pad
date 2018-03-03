@@ -24,7 +24,7 @@
     }
   }
 
-  .clear-icon {
+  .clear-icon, .anticon-arrow-up, .anticon-arrow-down {
     position: absolute;
     right: 10px;
     top: 10px;
@@ -36,18 +36,15 @@
     border: 0px solid #fff;
     width: 16px;
     height: 16px;
-    background: url('../../images/icon_clear.png') 0 0 no-repeat;
-    background-size: 16px 16px;
-
-    &:before {
-      content: ' ';
-    }
+    z-index: 999;
     &:hover {
       opacity: 0.9;
     }
-
   }
-  .output-list {
-
+  .anticon-arrow-down {
+    right: 30px;
+  }
+  .anticon-arrow-up {
+    right: 50px;
   }
 }

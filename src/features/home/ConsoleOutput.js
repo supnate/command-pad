@@ -19,15 +19,22 @@ export default class ConsoleOutput extends PureComponent {
     }
   }
 
+  scrollTop = () => {
+    this.scrollNode.scrollTop = 0;
+  };
+  scrollBottom = () => {
+    this.scrollNode.scrollTop = this.scrollNode.scrollHeight;
+  };
+
   render() {
     return (
       <div className="home-console-output">
-        <Icon type="close-circle" className="clear-icon" title="Clear Output" onClick={this.props.onClear} />
-        <div className="output-wrapper" ref={scrollNode => this.scrollNode = scrollNode}>
+        <Icon type="close" className="clear-icon" title="Clear Output" onClick={this.props.onClear} />
+        <Icon type="arrow-up" title="Scroll to Top" onClick={this.scrollTop} />
+        <Icon type="arrow-down" title="Scroll to Bottom" onClick={this.scrollBottom} />
+        <div className="output-wrapper" ref={scrollNode => (this.scrollNode = scrollNode)}>
           <ul className="output-list">
-            {
-              this.props.lines.map(line => <li key={line.id} dangerouslySetInnerHTML={{__html: line.text}} />)
-            }
+            {this.props.lines.map(line => <li key={line.id} dangerouslySetInnerHTML={{ __html: line.text }} />)}
           </ul>
         </div>
       </div>
