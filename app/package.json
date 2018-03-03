@@ -1,7 +1,7 @@
 {
   "name": "CommandPad",
   "productName": "Command Pad",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "description": "GUI for managing command line programs.",
   "homepage": "https://github.com/supnate/command-pad",

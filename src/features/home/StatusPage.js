@@ -43,14 +43,21 @@ export class StatusPage extends Component {
   render() {
     const { home } = this.props;
 
-    const { runCmd, stopCmd, deleteCmd, reorderCmds, clearOutput, selectCmd } = this.props.actions; /* eslint no-shadow: 0 */
+    const {
+      runCmd,
+      stopCmd,
+      deleteCmd,
+      reorderCmds,
+      clearOutput,
+      selectCmd,
+    } = this.props.actions; /* eslint no-shadow: 0 */
     const { editing } = this.state;
     if (!home.appVersion) return this.renderLoading();
 
     const allCmds = home.cmdIds.map(id => home.cmdById[id]);
     const currentCmd = home.cmdById[this.props.home.selectedCmd];
     const outputs = currentCmd ? currentCmd.outputs : [];
-
+    const colWidth = home.colWidth;
     return (
       <div className="rekit-page home-status-page">
         <div className="header">
@@ -77,7 +84,7 @@ export class StatusPage extends Component {
           )}
         </div>
         <div className="page-content" id="status-list-container">
-          <div className="cmd-list-container">
+          <div className="cmd-list-container" style={{ width: `${colWidth}px;` }}>
             <CmdList
               cmds={allCmds}
               runCmd={runCmd}
@@ -98,7 +105,7 @@ export class StatusPage extends Component {
               <Welcome />
             )}
           </div>
-          <div className="output-container">
+          <div className="output-container" style={{ left: `${colWidth}px;` }}>
             <ConsoleOutput lines={outputs} onClear={() => clearOutput(this.props.home.selectedCmd)} />;
           </div>
         </div>

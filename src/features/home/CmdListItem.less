@@ -3,10 +3,10 @@
 .home-cmd-list-item {
   position: relative;
   padding: 12px 40px 12px 40px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #333;
   font-size: 14px;
   &:hover {
-    background-color: #fafafa;
+    background-color: #191919;
   }
   .action-icon {
     position: absolute;
@@ -51,7 +51,7 @@
     font-size: 10px;
     border-radius: 2px;
     padding: 0 2px;
-    background-color: #57c5f7;
+    background-color: darken(#57c5f7, 20%);
     color: #fff;
     transform: translateY(-1px);
 
@@ -73,7 +73,7 @@
     text-overflow: ellipsis;
     .name {
       
-      color: #555;
+      color: #ddd;
       &:hover {
         color: #57c5f7;
       }
@@ -88,7 +88,7 @@
     font-size: 10px;
     background-color: #f90;
     color: #fff;
-    transform: translateY(-1px;)
+    transform: translateY(-1px);
   }
 
   .output {
@@ -151,34 +151,12 @@
       }
     }
 
-    .anticon-eye-o {
+    .anticon-ellipsis {
       position: relative;
       display: inline-block;
       font-size: 20px;
       color: #57c5f7;
       cursor: default;
-
-      &:after {
-        // opacity: 0;
-        // position: absolute;
-        // left: -9px;
-        // top: 2px;
-        // display: block;
-        // content: ' ';
-        // width: 0;
-        // height: 0;
-        // border-top: 7px solid transparent;
-        // border-left: 7px solid #000;
-        // border-bottom: 7px solid transparent;
-
-        // transition: opacity 0.2s;
-      }
-
-      // &:hover {
-      //   &:after {
-      //     opacity: 1;
-      //   }
-      // }
     }
   }
 
@@ -190,10 +168,11 @@
 
   &.stopped {
     .url-link, .sudo-icon {
-      background-color: #ccc;
+      background-color: #444;
+      color: #999;
     }
-    .action-icon, .anticon-eye-o {
-      color: #aaa;
+    .action-icon, .anticon-ellipsis {
+      color: #777;
     }
   }
 
@@ -210,8 +189,20 @@
   }
 
   &.selected {
-    background-color: #e6f7ff;
-    border-right: 4px solid #1890ff;
+    position: relative;
+    background-color: #111;
+    &:after {
+      content: ' ';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background-color: #1890ff;
+    }
+    .name {
+      color: #57c5f7;
+    }
   }
 
   

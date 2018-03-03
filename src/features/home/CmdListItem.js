@@ -294,11 +294,6 @@ class CmdListItem extends PureComponent {
         <div className="buttons">
           {editing && <Icon type="delete" title="Delete" onClick={this.handleDeleteCmd} />}
           {editing && <div className="icon-move" title="Move" />}
-          {!editing &&
-            cmd.outputs &&
-            cmd.outputs.length > 0 && (
-              <Icon type="eye-o" />
-            )}
         </div>
       </li>
     );
