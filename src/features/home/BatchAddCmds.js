@@ -47,18 +47,20 @@ export class BatchAddCmds extends Component {
   };
 
   handleDone = () => {
-    Promise.all(
-      this.state.cmds.filter(cmd => _.includes(this.state.selectedCmds, cmd.id)).map(cmd =>
+    this.state.cmds
+      .filter(cmd => _.includes(this.state.selectedCmds, cmd.id))
+      .map(cmd => () =>
         this.props.actions.saveCmd({
           name: cmd.name,
           cmd: cmd.command,
           cwd: this.props.workingDirectory,
         })
       )
-    ).then(() => {
-      this.props.onClose();
-      message.success('Import commands success.');
-    });
+      .reduce((promise, task) => promise.then(() => task()), Promise.resolve())
+      .then(() => {
+        this.props.onClose();
+        message.success('Import commands success.');
+      });
   };
 
   handleSelect = (cmd, selected) => {
