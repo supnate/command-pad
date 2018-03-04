@@ -127,37 +127,38 @@ export class StatusPage extends Component {
           )}
           {!editing && allCmds.length > 0 && <Icon type="swap" title="Sort" onClick={this.handleBeginEdit} />}
           {editing && (
-            <Button type="primary" size="small" onClick={this.handleEndEdit} style={{ float: 'right' }}>
+            <Button type="primary" size="small" onClick={this.handleEndEdit}>
               End Editing
             </Button>
           )}
         </div>
-        <div className="page-content" id="status-list-container">
-          <div className="cmd-list-container" style={{ width: `${colWidth}px;` }}>
-            <CmdList
-              cmds={allCmds}
-              runCmd={runCmd}
-              stopCmd={stopCmd}
-              deleteCmd={deleteCmd}
-              reorderCmds={reorderCmds}
-              clearOutput={clearOutput}
-              editing={editing}
-              selectCmd={selectCmd}
-              selectedCmd={this.props.home.selectedCmd}
-            />
-            {allCmds.length > 0 || editing ? (
-              <div className="footer">
-                Total {allCmds.length} command{allCmds.length > 1 ? 's' : ''},{' '}
-                {allCmds.filter(c => c.status === 'running').length} running.
-              </div>
-            ) : (
-              <Welcome />
-            )}
+        <Welcome onImportClick={this.importFromPackageJson} />
+        {(allCmds.length > 0 || editing) && (
+          <div className="page-content" id="status-list-container">
+            <div className="cmd-list-container" style={{ width: `${colWidth}px;` }}>
+              <CmdList
+                cmds={allCmds}
+                runCmd={runCmd}
+                stopCmd={stopCmd}
+                deleteCmd={deleteCmd}
+                reorderCmds={reorderCmds}
+                clearOutput={clearOutput}
+                editing={editing}
+                selectCmd={selectCmd}
+                selectedCmd={this.props.home.selectedCmd}
+              />
+              {(allCmds.length > 0 || editing) && (
+                <div className="footer">
+                  Total {allCmds.length} command{allCmds.length > 1 ? 's' : ''},{' '}
+                  {allCmds.filter(c => c.status === 'running').length} running.
+                </div>
+              )}
+            </div>
+            <div className="output-container" style={{ left: `${colWidth}px;` }}>
+              <ConsoleOutput lines={outputs} onClear={() => clearOutput(this.props.home.selectedCmd)} />;
+            </div>
           </div>
-          <div className="output-container" style={{ left: `${colWidth}px;` }}>
-            <ConsoleOutput lines={outputs} onClear={() => clearOutput(this.props.home.selectedCmd)} />;
-          </div>
-        </div>
+        )}
       </div>
     );
   }

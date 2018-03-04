@@ -19,7 +19,7 @@ function createWindow() {
   if (isDev) {
     win = new BrowserWindow({ width: 1080, height: 600 });
   } else {
-    win = new BrowserWindow({ width: 860, height: 600 });
+    win = new BrowserWindow({ width: 1080, height: 600 });
   }
 
   global.CP_WIN = win;

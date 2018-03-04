@@ -23,7 +23,8 @@ export default class Welcome extends PureComponent {
         </p>
         <p>Now click below button to add your first command!</p>
         <p>
-          <Button type="primary" onClick={() => hashHistory.push('/cmd/add')}>Add Command</Button>
+          <Button type="primary" onClick={() => hashHistory.push('/cmd/add')}>Add Command</Button> &nbsp;&nbsp;or&nbsp;&nbsp;
+          <Button type="primary" onClick={this.props.onImportClick}>Import from package.json</Button>
         </p>
       </div>
     );
