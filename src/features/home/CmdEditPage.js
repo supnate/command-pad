@@ -102,7 +102,7 @@ export class CmdEditPage extends Component {
                 valuePropName: 'checked',
                 initialValue: !!initialData.finishPrompt,
               })(
-                <Checkbox>{this.getFormItemLabel('Notification when finished', 'Optional. Whether to show a notification when the is command finished/failed, it\'s useful for long-time commands. It will not notify you if manually stopping it.')}</Checkbox>
+                <Checkbox>{this.getFormItemLabel('Notification when finished', 'Optional. Whether to show a notification when the command is finished/failed, it\'s useful for long-time commands. It will not notify you if manually stopping it.')}</Checkbox>
               )}
             </FormItem>
             

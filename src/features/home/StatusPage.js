@@ -43,7 +43,7 @@ export class StatusPage extends Component {
           const content = bridge.remote.require('fs').readFileSync(fileNames[0], 'utf8');
           const cwd = bridge.remote.require('path').dirname(file);
           const json = JSON.parse(content);
-          const prjName = json.name || 'NONAME';
+          const prjName = _.flow(_.camelCase, _.upperFirst)(json.name || 'NONAME');
           const npmScripts = Object.keys(json.scripts);
           this.setState({
             npmScripts,
