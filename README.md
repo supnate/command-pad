@@ -9,6 +9,11 @@ It helps to start and stop a command line tools easily and you can also monitor 
 You can learn more about it by the review from @softpedia: http://www.softpedia.com/get/Programming/Other-Programming-Files/Command-Pad.shtml
 
 # Downloads
+Version 0.1.2 Released at 2018-3-6:
+* MacOS: [Command Pad-0.1.2.dmg](https://github.com/supnate/command-pad/releases/download/v0.1.2/Command.Pad-0.1.2.dmg)
+* Windows: coming soon...
+
+
 Version 0.1.1 Released at 2016-10-26:
 * MacOS: [Command Pad-0.1.1.dmg](https://github.com/supnate/command-pad/releases/download/v0.1.1/Command.Pad-0.1.1.dmg)
 * Windows: [Command.Pad.Setup.0.1.1.zip](https://github.com/supnate/command-pad/releases/download/v0.1.1/Command.Pad.Setup.0.1.1.zip)
