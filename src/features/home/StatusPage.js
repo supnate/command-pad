@@ -99,7 +99,13 @@ export class StatusPage extends Component {
     return (
       <div className="rekit-page home-status-page">
         {this.state.importDialogVisible && (
-          <Modal visible width={600} footer={null} title={`Import scripts from ${this.state.prjName}`}>
+          <Modal
+            visible
+            width={600}
+            footer={null}
+            style={{ top: '42px' }}
+            title={`Import scripts from ${this.state.prjName}`}
+          >
             <BatchAddCmds
               importedCmds={this.state.npmScripts}
               prjName={this.state.prjName}
@@ -133,10 +139,10 @@ export class StatusPage extends Component {
             </Button>
           )}
         </div>
-        <Welcome onImportClick={this.importFromPackageJson} />
+        {allCmds.length === 0 && !editing && <Welcome onImportClick={this.importFromPackageJson} />}
         {(allCmds.length > 0 || editing) && (
           <div className="page-content" id="status-list-container">
-            <div className="cmd-list-container" style={{ width: `${colWidth}px` }}>
+            <div className="cmd-list-container">
               <CmdList
                 cmds={allCmds}
                 runCmd={runCmd}
@@ -147,6 +153,7 @@ export class StatusPage extends Component {
                 editing={editing}
                 selectCmd={selectCmd}
                 selectedCmd={this.props.home.selectedCmd}
+                colWidth={this.props.home.colWidth}
               />
               {(allCmds.length > 0 || editing) && (
                 <div className="footer" style={{ width: `${colWidth}px` }}>

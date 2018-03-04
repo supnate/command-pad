@@ -15,6 +15,7 @@ class CmdList extends PureComponent {
     clearOutput: PropTypes.func.isRequired,
     selectCmd: PropTypes.func.isRequired,
     selectedCmd: PropTypes.string,
+    colWidth: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
@@ -63,7 +64,7 @@ class CmdList extends PureComponent {
     }
 
     return (
-      <ul className="home-cmd-list">
+      <ul className="home-cmd-list" style={{ width: `${this.props.colWidth}px` }}>
         {cmds.map((item, index) => (
           <CmdListItem
             key={item.id}
