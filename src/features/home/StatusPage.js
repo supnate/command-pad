@@ -6,7 +6,7 @@ import { Button, Col, Form, Icon, Input, Modal, Popover, Row } from 'antd';
 import { Link } from 'react-router';
 import CmdList from './CmdList';
 import { runCmd, stopCmd, deleteCmd, reorderCmds, clearOutput, selectCmd } from './redux/actions';
-import { ConsoleOutput, Welcome, BatchAddCmds } from './';
+import { ConsoleOutput, Welcome, BatchAddCmds, ColResizer } from './';
 
 export class StatusPage extends Component {
   static propTypes = {
@@ -108,6 +108,7 @@ export class StatusPage extends Component {
             />
           </Modal>
         )}
+        <ColResizer />
         <div className="header">
           {!editing && (
             <Link to="/cmd/add">
@@ -135,7 +136,7 @@ export class StatusPage extends Component {
         <Welcome onImportClick={this.importFromPackageJson} />
         {(allCmds.length > 0 || editing) && (
           <div className="page-content" id="status-list-container">
-            <div className="cmd-list-container" style={{ width: `${colWidth}px;` }}>
+            <div className="cmd-list-container" style={{ width: `${colWidth}px` }}>
               <CmdList
                 cmds={allCmds}
                 runCmd={runCmd}
@@ -148,13 +149,13 @@ export class StatusPage extends Component {
                 selectedCmd={this.props.home.selectedCmd}
               />
               {(allCmds.length > 0 || editing) && (
-                <div className="footer">
+                <div className="footer" style={{ width: `${colWidth}px` }}>
                   Total {allCmds.length} command{allCmds.length > 1 ? 's' : ''},{' '}
                   {allCmds.filter(c => c.status === 'running').length} running.
                 </div>
               )}
             </div>
-            <div className="output-container" style={{ left: `${colWidth}px;` }}>
+            <div className="output-container" style={{ left: `${colWidth}px` }}>
               <ConsoleOutput lines={outputs} onClear={() => clearOutput(this.props.home.selectedCmd)} />;
             </div>
           </div>
