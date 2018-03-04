@@ -64,30 +64,25 @@ class CmdList extends PureComponent {
 
     return (
       <ul className="home-cmd-list">
-        {
-          cmds.map((item, index) =>
-            <CmdListItem
-              key={item.id}
-              index={index}
-              cmd={item}
-              selected={item.id === this.props.selectedCmd}
-              editing={this.props.editing}
-              runCmd={this.props.runCmd}
-              stopCmd={this.props.stopCmd}
-              deleteCmd={this.props.deleteCmd}
-              clearOutput={this.props.clearOutput}
-              moveCmdItem={this.moveCmdItem}
-              dropCmdItem={this.dropCmdItem}
-              selectCmd={this.props.selectCmd}
-            />
-          )
-        }
+        {cmds.map((item, index) => (
+          <CmdListItem
+            key={item.id}
+            index={index}
+            cmd={item}
+            selected={item.id === this.props.selectedCmd}
+            editing={this.props.editing}
+            runCmd={this.props.runCmd}
+            stopCmd={this.props.stopCmd}
+            deleteCmd={this.props.deleteCmd}
+            clearOutput={this.props.clearOutput}
+            moveCmdItem={this.moveCmdItem}
+            dropCmdItem={this.dropCmdItem}
+            selectCmd={this.props.selectCmd}
+          />
+        ))}
       </ul>
     );
   }
 }
 
-export default _.flow(
-  DragDropContext(HTML5Backend),
-)(CmdList);
-
+export default _.flow(DragDropContext(HTML5Backend))(CmdList);

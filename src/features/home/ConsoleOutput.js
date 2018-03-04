@@ -27,6 +27,13 @@ export default class ConsoleOutput extends PureComponent {
   };
 
   render() {
+    if (!this.props.lines.length) {
+      return (
+        <div className="home-console-output">
+          <div className="empty">Not started or no output.</div>
+        </div>
+      );
+    }
     return (
       <div className="home-console-output">
         <Icon type="close" className="clear-icon" title="Clear Output" onClick={this.props.onClear} />
