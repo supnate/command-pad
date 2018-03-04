@@ -8,6 +8,8 @@ It helps to start and stop a command line tools easily and you can also monitor 
 
 You can learn more about it by the review from @softpedia: http://www.softpedia.com/get/Programming/Other-Programming-Files/Command-Pad.shtml
 
+<img src="/images/command-pad.gif?raw=true" width="600">
+
 # Downloads
 Version 0.1.2 Released at 2018-3-6:
 * MacOS: [Command Pad-0.1.2.dmg](https://github.com/supnate/command-pad/releases/download/v0.1.2/Command.Pad-0.1.2.dmg)
