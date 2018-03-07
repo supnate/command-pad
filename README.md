@@ -70,6 +70,14 @@ Click `sort` icon on the header:
 
 <img src="/images/sort-icon.png?raw=true" width="362">
 
+# Contribute
+To run a local dist build:
+1. Download certificate from your Apple development console.
+2. Use electron-builder to build
+3. Set package.json "build.mac.identity" to you own.
+4. Run `npm run dist`.
+5. Check the result under dist/mac for app and dmg.
+
 # Privacy
 Command Pad will not upload any confidential information of you. But to continously improve the user experience it will only send very few usage data like app openning, command count, platform information etc to the analytics server anonymously. You can check the logic from the source code at `src/node/send_stat.js`. If you don't want this, you can build your own version from source code after deleting the stat logic.
 
