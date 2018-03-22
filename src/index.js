@@ -10,6 +10,7 @@ import routeConfig from './common/routeConfig';
 
 const store = configStore();
 const history = syncHistoryWithStore(hashHistory, store);
+window.globalHistory = history;
 
 const root = document.createElement('div');
 document.body.appendChild(root);

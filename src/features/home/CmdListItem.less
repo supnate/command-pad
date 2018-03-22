@@ -7,6 +7,9 @@
   font-size: 14px;
   &:hover {
     background-color: #191919;
+    .anticon-edit {
+      display: inline-block;
+    }
   }
   .action-icon {
     position: absolute;
@@ -45,6 +48,16 @@
     }
   }
 
+  .anticon-edit {
+    display: none;
+    color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 14px;
+  }
+
+
   .url-link {
     display: inline-block;
     margin-right: 5px;
@@ -64,12 +77,17 @@
     }
   }
 
+  .cmd-name {
+    cursor: default;
+  }
+
   .display-name {
     display: block;
     max-width: 100%;
     line-height: 16px;
     white-space: nowrap;
     overflow: hidden;
+    color: rgba(255, 255, 255, 0.7);
     text-overflow: ellipsis;
     .name {
       

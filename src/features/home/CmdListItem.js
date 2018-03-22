@@ -285,10 +285,16 @@ class CmdListItem extends PureComponent {
               {this.getPortString(cmd)}
             </ALink>
           )}
-          <Link onClick={evt => evt.stopPropagation()} to={`/cmd/edit/${cmd.id}`} title={`${cmd.sudo ? 'sudo ' : ''}${cmd.cmd}`} className="name">
+          <span
+            onClick={evt => evt.stopPropagation()}
+            to={`/cmd/edit/${cmd.id}`}
+            title={`${cmd.sudo ? 'sudo ' : ''}${cmd.cmd}`}
+            className="cmd-name"
+          >
             {cmd.sudo && <span className="sudo-icon">S</span>}
             {cmd.name || cmd.cmd || 'No name.'}
-          </Link>
+          </span>
+          <Icon type="edit" title="edit" onClick={() => globalHistory.push(`/cmd/edit/${cmd.id}`)}/>
         </div>
 
         <div className="buttons">
