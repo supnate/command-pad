@@ -63,6 +63,12 @@ export class BatchAddCmds extends Component {
       });
   };
 
+  handleSelectAll = evt => {
+    console.log('select all: ', evt.target.checked);
+    if (evt.target.checked) this.setState({ selectedCmds: this.state.cmds.map(c => c.id) });
+    else this.setState({ selectedCmds: [] });
+  };
+
   handleSelect = (cmd, selected) => {
     let newSelectedCmds;
     if (selected) {
@@ -98,7 +104,13 @@ export class BatchAddCmds extends Component {
           </Radio.Group>
         </div>
         <Row gutter={10} style={{ padding: '5px 0' }}>
-          <Col span={1} style={{ textAlign: 'center', paddingTop: '5px' }} />
+          <Col span={1} style={{ textAlign: 'center', paddingTop: '5px' }}>
+            <Checkbox
+              className="cb-select-all"
+              checked={this.state.selectedCmds.length === this.state.cmds.length}
+              onChange={this.handleSelectAll}
+            />
+          </Col>
           <Col span={10}>
             <b>Name</b>
           </Col>
