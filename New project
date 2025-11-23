@@ -1,0 +1,180 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- UNIVERSAL PREAMBLE BLOCK ---
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=2cm, right=2cm]{geometry}
+\usepackage{fontspec}
+
+% Using English as the main language for a technical specification
+\usepackage[english, bidi=basic, provide=*]{babel}
+\babelprovide[import, onchar=ids fonts]{english}
+
+% Set default/Latin font to Sans Serif
+\babelfont{rm}{Noto Sans}
+
+\usepackage{amsmath} % For math environments
+\usepackage{booktabs} % For nice tables
+\usepackage{hyperref} % Always the last package
+\usepackage{alltt} % Similar to verbatim, but allows commands inside if needed, though we will keep it simple.
+
+\title{SwiftGrocer: Hyper-Scalable Quick Commerce Platform}
+\author{Technical Specification Document}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document outlines the architecture and key technical components of \textbf{SwiftGrocer}, a third-generation Quick Commerce (QC) platform designed to be more powerful than existing solutions like Blinkit or Instamart. The core competitive advantage lies in a resilient Microservices architecture, real-time data streaming, and advanced Machine Learning models for predictive logistics and inventory management.
+\end{abstract}
+
+\section{Core Architecture Overview}
+
+SwiftGrocer employs a decoupled, event-driven Microservices architecture to ensure high availability and horizontal scalability.
+
+\subsection{Technology Stack}
+\begin{itemize}
+    \item \textbf{Frontend (Mobile):} React Native (single codebase for iOS/Android).
+    \item \textbf{Gateway:} GraphQL API Gateway (Apollo Server) for efficient data fetching.
+    \item \textbf{Backend (Microservices):} Python (Django/FastAPI) and Node.js (Express) based on service requirements.
+    \item \textbf{Database:} PostgreSQL (Transactional Data), Redis (Caching, Sessions, Real-time Leaderboards), and Elasticsearch (Product Search).
+    \item \textbf{Real-time \& Messaging:} Apache Kafka (Event Streaming) and WebSockets (Live order tracking, Chat).
+    \item \textbf{Deployment:} Kubernetes (K8s) for container orchestration, hosted on a major cloud provider.
+\end{itemize}
+
+\subsection{Key Microservices}
+\begin{enumerate}
+    \item \textbf{Catalog Service:} Handles product listings, inventory links, and static content.
+    \item \textbf{Inventory Prediction Service (ML):} Uses historical data and external factors (weather, events) to predict hyper-local stock needs.
+    \item \textbf{Order Processing Service:} Manages order creation, payment integration, and status updates.
+    \item \textbf{Logistics \& Routing Service:} The brain of the operation, handling dynamic rider assignment, route optimization, and geofencing.
+    \item \textbf{User Service:} Authentication (OAuth2), profiles, and personalized recommendations.
+\end{enumerate}
+
+\section{The "More Powerful" Code Components}
+
+The platform's superiority is defined by its predictive and real-time capabilities. Below are conceptual code representations of the critical features.
+
+\subsection{Predictive Inventory Forecasting (Python Mockup)}
+
+This service uses a time-series model (like ARIMA or Prophet) to forecast demand for SKUs (Stock Keeping Units) at each dark store location.
+
+\begin{alltt}
+# Predictive Inventory Service (Python/FastAPI)
+
+from datetime import datetime, timedelta
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
+
+def train_forecasting_model(store_id: str, historical_sales: pd.DataFrame):
+    """
+    Trains an ML model to predict future demand for a specific dark store.
+    Features: day_of_week, is_holiday, avg_temp, previous_day_sales.
+    """
+    historical_sales['day_of_week'] = historical_sales['date'].dt.dayofweek
+    # ... more feature engineering ...
+
+    model = RandomForestRegressor(n_estimators=100, random_state=42)
+    X = historical_sales[['day_of_week', 'avg_temp', 'previous_day_sales']]
+    y = historical_sales['units_sold']
+
+    model.fit(X, y)
+    return model
+
+def predict_stock_needs(model, next_day_features: dict) -> int:
+    """Predicts units needed for the next day based on features."""
+    # In a real system, this would output predictions for all SKUs
+    # for the entire forecast window (e.g., next 7 days).
+    prediction = model.predict([list(next_day_features.values())])
+    return max(0, int(prediction[0] * 1.1)) # Add 10\% buffer
+\end{alltt}
+
+\subsection{Real-time Rider Assignment and Routing (Node.js/JavaScript Mockup)}
+
+The Logistics Service must calculate rider proximity and estimated travel time in real-time, often using the Haversine formula for initial distance estimates before a more complex route-finding API call.
+
+\begin{alltt}
+// Logistics \& Routing Service (Node.js/TypeScript)
+
+/**
+ * Calculates the distance between two Geo-Coordinates using the Haversine formula.
+ * Used for initial rider proximity screening.
+ * @param \{lat1, lon1\} - Rider location
+ * @param \{lat2, lon2\} - Dark Store location
+ * @returns Distance in kilometers (float)
+ */
+function haversineDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth radius in km
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
+/**
+ * Assigns the best rider based on real-time location and current load.
+ */
+async function findOptimalRider(order_id, store_location) {
+    const availableRiders = await getRidersByStatus('AVAILABLE');
+    let bestRider = null;
+    let minScore = Infinity;
+
+    for (const rider of availableRiders) {
+        const distance = haversineDistance(
+            rider.geo.lat, rider.geo.lon,
+            store_location.lat, store_location.lon
+        );
+        // Scoring: prioritizes low distance and low current load
+        const score = distance * 0.7 + rider.current_load * 0.3;
+
+        if (score < minScore) {
+            minScore = score;
+            bestRider = rider;
+        }
+    }
+
+    if (bestRider) {
+        // Log event to Kafka: RIDER_ASSIGNED
+        await publishEvent('RIDER_ASSIGNED', { order_id, rider_id: bestRider.id });
+        return bestRider;
+    }
+    throw new Error('No optimal rider found.');
+}
+\end{alltt}
+
+\subsection{Real-time Order Data Model (PostgreSQL)}
+
+A simplified representation of the core tables required for high-speed quick commerce order tracking.
+
+\begin{alltt}
+-- SQL DDL (PostgreSQL Schema)
+
+CREATE TABLE dark_stores (
+    store_id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    latitude DECIMAL(10, 7) NOT NULL,
+    longitude DECIMAL(10, 7) NOT NULL,
+    is_operational BOOLEAN DEFAULT TRUE,
+    inventory_version INT DEFAULT 1 -- Updated when inventory changes
+);
+
+CREATE TABLE orders (
+    order_id UUID PRIMARY KEY,
+    user_id UUID NOT NULL,
+    store_id UUID REFERENCES dark_stores(store_id),
+    total_amount DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(50) NOT NULL, -- e.g., PENDING, PREPARING, PICKED_UP, DELIVERED
+    rider_id UUID,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    expected_delivery_time TIMESTAMP WITH TIME ZONE
+);
+\end{alltt}
+
+\section{Conclusion}
+
+SwiftGrocer's advantage is built on a modular, data-driven foundation. The use of microservices allows for specialized development (e.g., Python for ML-heavy services, Node.js for high I/O real-time services) and enables true hyper-scaling capability far beyond a monolithic application structure.
+\end{document}
